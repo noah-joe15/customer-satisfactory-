@@ -424,3 +424,48 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   .customer-page .fb-field input,
   .customer-page .fb-field select{min-height:46px}
 }
+
+/* =====================================================
+   CHART GRID REFACTOR — SMART MODERATE TRAYS (ALL DEVICES)
+   ===================================================== */
+
+/* Grid on every screen: 2 columns mobile/tablet, 4 columns large desktop */
+.admin-page .chart-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+@media(min-width:1200px){
+  .admin-page .chart-grid{grid-template-columns:repeat(4,1fr);gap:14px}
+}
+
+/* Every tray can shrink; no overflow */
+.admin-page .chart-grid>*{min-width:0}
+.admin-page .chart-card{
+  min-width:0;
+  overflow:hidden;
+  padding:14px 12px;
+  border-radius:18px;
+}
+
+/* Wide trays (Answer vs satisfaction, comments, table) span the row */
+.admin-page .chart-card.wide{grid-column:1/-1}
+
+/* Moderate tray heights — no more giant cards */
+.chart-body{height:180px}
+.chart-body.tall{height:240px}
+
+/* Phones: compact but still 2-column grid */
+@media(max-width:640px){
+  .admin-page .chart-grid{gap:10px}
+  .admin-page .chart-card{padding:12px 10px;border-radius:16px}
+  .admin-page .chart-card h3{font-size:11px;gap:6px;margin-bottom:10px}
+  .chart-body{height:160px}
+  .chart-body.tall{height:220px}
+}
+
+/* Large desktop: one smart row of four + taller liquid tubes */
+@media(min-width:1200px){
+  .chart-body{height:200px}
+  .chart-body.tall{height:260px}
+}
