@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TANTRADE Customer Satisfaction | Kuridhika kwa Wateja</title>
+<link rel="icon" type="image/png" href="tantrade-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="feedback.css?v=1">
+</head>
+<body>
+
+<header class="fb-header">
+  <div class="fb-brand">
+    <img src="tantrade-logo.png" alt="TANTRADE">
+    <div>
+      <b>TANTRADE</b>
+      <span data-i18n="brandSub">Customer Service Satisfaction</span>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button id="langEn" class="active" onclick="setLang('en')">EN</button>
+    <button id="langSw" onclick="setLang('sw')">SW</button>
+  </div>
+</header>
+
+<main class="fb-main">
+
+  <!-- STEP 1: PERSONAL INFO -->
+  <div class="fb-card" id="stepPersonal">
+    <h1 data-i18n="formTitle">Tell us about yourself</h1>
+    <p class="fb-sub" data-i18n="formSub">Your feedback helps us improve our services.</p>
+    <div class="fb-grid">
+      <div class="fb-field"><label data-i18n="name">Full name</label><input id="fName" type="text" autocomplete="name"></div>
+      <div class="fb-field"><label data-i18n="phone">Phone number</label><input id="fPhone" type="tel" autocomplete="tel"></div>
+      <div class="fb-field"><label data-i18n="email">Email address</label><input id="fEmail" type="email" autocomplete="email"></div>
+      <div class="fb-field"><label data-i18n="gender">Gender</label>
+        <select id="fGender">
+          <option value="">--</option>
+          <option value="Male" data-i18n="male">Male</option>
+          <option value="Female" data-i18n="female">Female</option>
+        </select>
+      </div>
+      <div class="fb-field"><label data-i18n="region">Region</label><select id="fRegion"><option value="">--</option></select></div>
+      <div class="fb-field"><label data-i18n="district">District</label><input id="fDistrict" type="text"></div>
+    </div>
+    <button class="fb-btn" onclick="goToQuestions()" data-i18n="next">Continue to questionnaire</button>
+  </div>
+
+  <!-- STEP 2: QUESTIONNAIRE -->
+  <div class="fb-card hidden" id="stepQuestions">
+    <div id="qWrap"></div>
+    <div class="fb-nav">
+      <button class="fb-btn ghost" onclick="backToPersonal()" data-i18n="back">Back</button>
+      <button class="fb-btn" onclick="submitSurvey()" data-i18n="submit">Submit feedback</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: DONE -->
+  <div class="fb-card hidden" id="stepDone">
+    <div class="done-icon"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h1 data-i18n="thanksTitle">Thank you!</h1>
+    <p class="fb-sub" data-i18n="thanksMsg">Your feedback has been recorded successfully.</p>
+    <button class="fb-btn ghost" onclick="location.reload()" data-i18n="again">Submit another response</button>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="feedback.js?v=1"></script>
+</body>
+</html>
