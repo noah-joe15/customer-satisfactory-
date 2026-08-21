@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="feedback.css?v=1">
 </head>
-<body>
+<body class="admin-page">
 
 <header class="fb-header">
   <div class="fb-brand">
@@ -39,16 +39,15 @@
 
     <div class="kpi-row" id="kpiRow"></div>
 
-    <div class="chart-grid">
-      <div class="chart-card wide"><h3>Answer rate vs satisfaction rate per question (%)</h3><canvas id="chRate"></canvas></div>
-      <div class="chart-card"><h3>Gender distribution</h3><canvas id="chGender"></canvas></div>
-      <div class="chart-card"><h3>Responses per day (last 14 days)</h3><canvas id="chTrend"></canvas></div>
-      <div class="chart-card"><h3>Top regions</h3><canvas id="chRegion"></canvas></div>
-      <div class="chart-card"><h3>Top districts</h3><canvas id="chDistrict"></canvas></div>
-      <div class="chart-card wide"><h3>Customer suggestions (open comments)</h3><div id="commentsList"></div></div>
-      <div class="chart-card wide"><h3>Recent responses</h3><div class="tbl-wrap"><table class="fb-tbl" id="respTable"></table></div></div>
+        <div class="chart-grid">
+      <div class="chart-card glass wide"><h3>Answer rate vs satisfaction rate per question (%)</h3><div class="chart-body tall"><canvas id="chRate"></canvas></div></div>
+      <div class="chart-card glass"><h3>Gender distribution</h3><div class="chart-body"><canvas id="chGender"></canvas></div></div>
+      <div class="chart-card glass"><h3>Responses per day (last 14 days)</h3><div class="chart-body"><canvas id="chTrend"></canvas></div></div>
+      <div class="chart-card glass"><h3>Top regions</h3><div class="chart-body"><canvas id="chRegion"></canvas></div></div>
+      <div class="chart-card glass"><h3>Top districts</h3><div class="chart-body"><canvas id="chDistrict"></canvas></div></div>
+      <div class="chart-card glass wide"><h3>Customer suggestions (open comments)</h3><div id="commentsList" class="scroll-box"></div></div>
+      <div class="chart-card glass wide"><h3>Recent responses</h3><div class="tbl-wrap scroll-box"><table class="fb-tbl" id="respTable"></table></div></div>
     </div>
-  </div>
 
 </main>
 
