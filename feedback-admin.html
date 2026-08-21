@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TANTRADE Feedback — Admin Dashboard</title>
+<link rel="icon" type="image/png" href="tantrade-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="feedback.css?v=1">
+</head>
+<body>
+
+<header class="fb-header">
+  <div class="fb-brand">
+    <img src="tantrade-logo.png" alt="TANTRADE">
+    <div><b>TANTRADE</b><span>Feedback Analytics</span></div>
+  </div>
+  <a class="lang-toggle" href="feedback.html" style="text-decoration:none;color:#cfe3f5;padding:6px 14px">View Form</a>
+</header>
+
+<main class="adm-wrap">
+
+  <div id="admLogin" class="fb-card fb-login">
+    <h1>Admin Login</h1>
+    <p class="fb-sub">Feedback dashboard access</p>
+    <div class="fb-field"><label>Password</label><input id="admPass" type="password" onkeyup="if(event.key==='Enter')adminLogin()"></div>
+    <button class="fb-btn" onclick="adminLogin()">Login</button>
+  </div>
+
+  <div id="admBox" class="hidden">
+    <div class="adm-top">
+      <h1>Customer Satisfaction Dashboard</h1>
+      <div class="adm-actions">
+        <button class="btn-w" onclick="loadAll()">Refresh</button>
+        <button class="btn-g" onclick="exportCSV()">Export CSV</button>
+        <button class="btn-w" onclick="adminLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <div class="chart-grid">
+      <div class="chart-card wide"><h3>Answer rate vs satisfaction rate per question (%)</h3><canvas id="chRate"></canvas></div>
+      <div class="chart-card"><h3>Gender distribution</h3><canvas id="chGender"></canvas></div>
+      <div class="chart-card"><h3>Responses per day (last 14 days)</h3><canvas id="chTrend"></canvas></div>
+      <div class="chart-card"><h3>Top regions</h3><canvas id="chRegion"></canvas></div>
+      <div class="chart-card"><h3>Top districts</h3><canvas id="chDistrict"></canvas></div>
+      <div class="chart-card wide"><h3>Customer suggestions (open comments)</h3><div id="commentsList"></div></div>
+      <div class="chart-card wide"><h3>Recent responses</h3><div class="tbl-wrap"><table class="fb-tbl" id="respTable"></table></div></div>
+    </div>
+  </div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="feedback-admin.js?v=1"></script>
+</body>
+</html>
