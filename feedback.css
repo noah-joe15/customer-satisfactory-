@@ -161,3 +161,139 @@ table.fb-tbl{width:100%;border-collapse:collapse;font-size:12px}
 .admin-page .fb-card h1{color:#fff}
 .admin-page .fb-sub{color:#9fb8d9}
 .admin-page .fb-field label{color:#9fb8d9}
+
+/* =====================================================
+   LIQUID GLASS CUSTOMER FORM REDESIGN
+   ===================================================== */
+.customer-page{
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(0,114,188,.35), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, rgba(0,133,74,.25), transparent 55%),
+    linear-gradient(160deg,#02101f,#04264a 55%,#033158);
+  min-height:100vh;position:relative;overflow-x:hidden;
+}
+.customer-page::before,.customer-page::after{
+  content:'';position:fixed;z-index:0;border-radius:50%;
+  filter:blur(90px);opacity:.45;pointer-events:none;
+  animation:blobFloat 22s ease-in-out infinite alternate;
+}
+.customer-page::before{width:420px;height:420px;background:rgba(0,114,188,.5);top:-120px;right:-80px}
+.customer-page::after{width:380px;height:380px;background:rgba(0,133,74,.4);bottom:-140px;left:-100px;animation-delay:-8s}
+@keyframes blobFloat{from{transform:translate(0,0) scale(1)}to{transform:translate(40px,30px) scale(1.15)}}
+.customer-page>*{position:relative;z-index:1}
+@media (prefers-reduced-motion: reduce){.customer-page::before,.customer-page::after{animation:none}}
+
+/* Glass cards for customer form */
+.customer-page .fb-card{
+  background:linear-gradient(150deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-radius:22px;
+  box-shadow:0 12px 36px rgba(0,8,25,.35), inset 0 1px 0 rgba(255,255,255,.14);
+  color:#fff;
+}
+.customer-page .fb-card h1{color:#fff;font-size:22px;letter-spacing:-.3px;margin-bottom:8px}
+.customer-page .fb-sub{color:#9fb8d9;font-size:13px;margin-bottom:20px}
+
+/* Form fields */
+.customer-page .fb-field label{color:#bcd7f2;font-weight:700}
+.customer-page .fb-field input,
+.customer-page .fb-field select,
+.customer-page .fb-field textarea{
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.18);
+  color:#fff;
+  border-radius:12px;
+  transition:.25s;
+}
+.customer-page .fb-field input:focus,
+.customer-page .fb-field select:focus,
+.customer-page .fb-field textarea:focus{
+  background:rgba(255,255,255,.12);
+  border-color:#4db2ff;
+  box-shadow:0 0 0 3px rgba(77,178,255,.15);
+  outline:none;
+}
+.customer-page .fb-field input::placeholder,
+.customer-page .fb-field textarea::placeholder{color:rgba(255,255,255,.4)}
+
+/* Question sections */
+.customer-page .q-sec{
+  color:#4db2ff;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  font-weight:700;
+  letter-spacing:.8px;
+}
+.customer-page .q-text{color:#eaf3ff;font-size:14px;line-height:1.6;margin-bottom:12px}
+.customer-page .q-opt{
+  background:rgba(255,255,255,.06);
+  border:1.5px solid rgba(255,255,255,.14);
+  color:#dbe9ff;
+  border-radius:12px;
+  transition:.2s;
+}
+.customer-page .q-opt:hover{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.25)}
+.customer-page .q-opt:has(input:checked){
+  background:rgba(0,133,74,.15);
+  border-color:#2fb56b;
+  color:#8ce8b0;
+  font-weight:600;
+}
+.customer-page .q-opt input{accent-color:#2fb56b}
+
+/* Buttons */
+.customer-page .fb-btn{
+  background:linear-gradient(135deg,#00693b,#00854a);
+  border-radius:14px;
+  font-weight:700;
+  letter-spacing:.3px;
+  box-shadow:0 6px 18px rgba(0,133,74,.35);
+  transition:.25s;
+}
+.customer-page .fb-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 26px rgba(0,133,74,.45);
+}
+.customer-page .fb-btn.ghost{
+  background:rgba(255,255,255,.12);
+  color:#eaf3ff;
+  border:1px solid rgba(255,255,255,.2);
+}
+.customer-page .fb-btn.ghost:hover{background:rgba(255,255,255,.18)}
+
+/* Success state */
+.customer-page #stepDone .done-icon{
+  background:rgba(47,181,107,.2);
+  color:#8ce8b0;
+  box-shadow:0 0 40px rgba(47,181,107,.3);
+}
+.customer-page #stepDone h1{color:#fff}
+.customer-page #stepDone .fb-sub{color:#9fb8d9}
+
+/* Header glass */
+.customer-page .fb-header{
+  background:rgba(8,14,24,.85);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.customer-page .lang-toggle{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.12);
+}
+.customer-page .lang-toggle button{color:#cfe3f5}
+.customer-page .lang-toggle button.active{
+  background:linear-gradient(135deg,#00693b,#00854a);
+  box-shadow:0 4px 12px rgba(0,133,74,.3);
+}
+
+/* Scrollbar styling */
+.customer-page *{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent}
+.customer-page *::-webkit-scrollbar{width:6px;height:6px}
+.customer-page *::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:99px}
+
+/* Mobile responsiveness */
+@media(max-width:640px){
+  .customer-page .fb-main{padding:18px 12px 50px}
+  .customer-page .fb-card{padding:22px 18px;border-radius:18px}
+  .customer-page .fb-card h1{font-size:20px}
+  .customer-page .q-text{font-size:13px}
+}
