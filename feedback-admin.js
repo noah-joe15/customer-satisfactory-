@@ -2,7 +2,7 @@ const sb = supabase.createClient(
   'https://fmaaudmdgmgklvqcmvad.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtYWF1ZG1kZ21na2x2cWNtdmFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzk2MjMsImV4cCI6MjEwMjcxNTYyM30.yGKizF1gywUIctA_VKDVuI9YO8rH7i-kfQ2RfDb2u_E'
 );
-const ADM_PASS = 'tantrade2026';
+const ADM_PASS = 'tantrade@123';
 const QS = ['q1','q2','q3','q4','q5','q6','q7','q8','q9'];
 const Q_LABELS = ['Q1 Overall satisfaction','Q2 Professionalism','Q3 Timeliness','Q4 Clarity of information','Q5 Responsiveness','Q6 Concerns listened','Q7 Service quality','Q8 Met expectations','Q9 Would recommend'];
 let rows = [];
