@@ -402,3 +402,25 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 
 .chart-body.tall{height:300px}
 @media(max-width:640px){.chart-body.tall{height:260px}}
+
+/* =====================================================
+   CUSTOMER VIEW MOBILE POLISH
+   ===================================================== */
+.customer-page .fb-main{padding-bottom:calc(40px + env(safe-area-inset-bottom))}
+
+@media(max-width:480px){
+  .customer-page .fb-header{padding:10px 12px}
+  .customer-page .fb-logo{width:44px;height:34px}
+  .customer-page .fb-brand b{font-size:13px;letter-spacing:.5px}
+  .customer-page .fb-brand span{font-size:9px}
+  .customer-page .lang-toggle button{padding:6px 10px;font-size:11px}
+  .customer-page .fb-btn{padding:13px;font-size:14px}
+  .customer-page .fb-nav{flex-direction:column-reverse}
+  .customer-page .fb-nav .fb-btn{width:100%}
+  .customer-page .q-opt{padding:12px;font-size:13px}
+}
+
+@media(max-width:640px){
+  .customer-page .fb-field input,
+  .customer-page .fb-field select{min-height:46px}
+}
