@@ -399,3 +399,6 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   .admin-page .fb-tbl{font-size:11px}
   .admin-page .fb-tbl th,.admin-page .fb-tbl td{padding:7px 8px;white-space:nowrap}
 }
+
+.chart-body.tall{height:300px}
+@media(max-width:640px){.chart-body.tall{height:260px}}
