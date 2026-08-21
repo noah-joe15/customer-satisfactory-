@@ -62,3 +62,20 @@ table.fb-tbl{width:100%;border-collapse:collapse;font-size:12px}
 .cmt{border-left:3px solid var(--green);background:#f8fbf8;border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px}
 .cmt small{color:var(--muted);display:block;margin-top:4px}
 .fb-login{max-width:380px;margin:60px auto}
+
+/* ===== OFFICIAL TANTRADE LOGO (LEFT OF HEADER) ===== */
+.fb-brand{display:flex;gap:10px;align-items:center;min-width:0}
+.fb-logo{
+  flex:none;
+  width:52px;height:40px;
+  border-radius:10px;
+  background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  padding:4px 6px;
+  overflow:hidden;
+  box-shadow:0 4px 14px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.6);
+}
+.fb-logo img{width:100%;height:100%;object-fit:contain}
+@media(max-width:480px){
+  .fb-logo{width:44px;height:34px;border-radius:8px;padding:3px 4px}
+}
