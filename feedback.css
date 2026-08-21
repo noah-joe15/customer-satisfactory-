@@ -297,3 +297,39 @@ table.fb-tbl{width:100%;border-collapse:collapse;font-size:12px}
   .customer-page .fb-card h1{font-size:20px}
   .customer-page .q-text{font-size:13px}
 }
+
+/* ===== FIX: SELECT / OPTION VISIBILITY (GENDER + REGION) ===== */
+.customer-page{color-scheme:dark}
+
+.customer-page .fb-field select{
+  -webkit-appearance:none;appearance:none;
+  color:#fff;
+  background-color:#0b2c50; /* solid fallback so white text is always readable */
+  background-image:
+    linear-gradient(150deg,rgba(255,255,255,.10),rgba(255,255,255,.04)),
+    url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239fb8d9' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+  padding-right:36px;
+}
+
+.customer-page .fb-field select option{
+  background-color:#06254a;
+  color:#eaf3ff;
+  font-weight:500;
+}
+
+.customer-page .fb-field select:focus{
+  outline:none;
+  border-color:#4db2ff;
+  box-shadow:0 0 0 3px rgba(77,178,255,.15);
+}
+
+.customer-page .fb-field input,
+.customer-page .fb-field textarea{
+  background-color:#0b2c50;
+  color:#fff;
+}
+
+.customer-page .fb-field input::placeholder,
+.customer-page .fb-field textarea::placeholder{color:rgba(234,243,255,.4)}
