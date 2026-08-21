@@ -14,13 +14,72 @@ if (window.Chart) {
   Chart.defaults.borderColor = 'rgba(255,255,255,.08)';
 }
 
-// Dedicated SVG icons (no emojis)
+// Dedicated SVG icons 
 const ICONS = {
   users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   female:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2.6"/><path d="M15.2 7.5H8.8L6.4 15.6h3.2L8.8 22h2.3l.5-6.4h.8l.5 6.4h2.3l-.8-6.4h3.2L15.2 7.5z"/></svg>',
   male:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2.6"/><path d="M12 7.5c-3 0-4.8 1.9-4.8 4.8V15h1.9v7h2.2v-7h1.4v7h2.2v-7h1.9v-2.7c0-2.9-1.8-4.8-4.8-4.8z"/></svg>',
   pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
   star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+};
+
+// ===== LIQUID GLASS TUBE PLUGIN =====
+function rr(ctx,x,y,w,h,r){
+  r=Math.min(r,w/2,h/2);
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+const glassTubes = {
+  id:'glassTubes',
+  // glass tube behind each bar
+  beforeDatasetsDraw:function(chart){
+    var ctx=chart.ctx, y=chart.scales.y;
+    var top=y.getPixelForValue(100), bottom=y.getPixelForValue(0);
+    chart.data.datasets.forEach(function(ds,di){
+      chart.getDatasetMeta(di).data.forEach(function(bar){
+        var w=(bar.width||12)+8, x=bar.x;
+        ctx.save();
+        ctx.beginPath();
+        rr(ctx,x-w/2,top-6,w,(bottom-top)+12,w/2);
+        ctx.fillStyle='rgba(255,255,255,.05)';
+        ctx.fill();
+        ctx.strokeStyle='rgba(255,255,255,.20)';
+        ctx.lineWidth=1;
+        ctx.stroke();
+        ctx.restore();
+      });
+    });
+  },
+  // shine stripe + meniscus on top of the liquid
+  afterDatasetsDraw:function(chart){
+    var ctx=chart.ctx, y=chart.scales.y;
+    var bottom=y.getPixelForValue(0);
+    chart.data.datasets.forEach(function(ds,di){
+      chart.getDatasetMeta(di).data.forEach(function(bar){
+        var w=bar.width||12, x=bar.x, top=bar.y;
+        if(bottom-top < w) return;
+        ctx.save();
+        ctx.beginPath();
+        rr(ctx,x-w/2,top,w,bottom-top,w/2);
+        ctx.clip();
+        var g=ctx.createLinearGradient(x-w/2,0,x+w/2,0);
+        g.addColorStop(0,'rgba(255,255,255,0)');
+        g.addColorStop(.3,'rgba(255,255,255,.30)');
+        g.addColorStop(.55,'rgba(255,255,255,0)');
+        ctx.fillStyle=g;
+        ctx.fillRect(x-w/2,top,w,bottom-top);
+        ctx.beginPath();
+        ctx.ellipse(x,top+3,Math.max(w/2-1,2),2.5,0,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,255,255,.35)';
+        ctx.fill();
+        ctx.restore();
+      });
+    });
+  }
 };
 
 // ===== AUTH (your existing Supabase client-side auth) =====
@@ -85,18 +144,57 @@ function renderKpis(){
 function destroy(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
 
 function renderCharts(){
-  // Answer vs satisfaction
+    // Answer vs satisfaction — LIQUID GLASS TUBES
   destroy('chRate');
   charts.chRate = new Chart(document.getElementById('chRate'), {
     type:'bar',
+    plugins:[glassTubes],
     data:{ labels:QS.map(function(q,i){return 'Q'+(i+1);}),
       datasets:[
-        {label:'Answer rate %', data:QS.map(function(q){return qStats(q).rate;}), backgroundColor:'#4db2ff', borderRadius:6, maxBarThickness:16},
-        {label:'Satisfaction rate %', data:QS.map(function(q){return qStats(q).sat;}), backgroundColor:'#2fb56b', borderRadius:6, maxBarThickness:16}
+        {
+          label:'Answer rate %',
+          data:QS.map(function(q){return qStats(q).rate;}),
+          backgroundColor:function(c){
+            var a=c.chart.chartArea; if(!a) return '#4db2ff';
+            var g=c.chart.ctx.createLinearGradient(0,a.bottom,0,a.top);
+            g.addColorStop(0,'rgba(77,178,255,.25)');
+            g.addColorStop(.6,'rgba(77,178,255,.75)');
+            g.addColorStop(1,'#8ecbff');
+            return g;
+          },
+          hoverBackgroundColor:'#8ecbff',
+          borderRadius:9, borderSkipped:false,
+          barPercentage:.5, categoryPercentage:.72
+        },
+        {
+          label:'Satisfaction rate %',
+          data:QS.map(function(q){return qStats(q).sat;}),
+          backgroundColor:function(c){
+            var a=c.chart.chartArea; if(!a) return '#2fb56b';
+            var g=c.chart.ctx.createLinearGradient(0,a.bottom,0,a.top);
+            g.addColorStop(0,'rgba(47,181,107,.25)');
+            g.addColorStop(.6,'rgba(47,181,107,.8)');
+            g.addColorStop(1,'#8ce8b0');
+            return g;
+          },
+          hoverBackgroundColor:'#8ce8b0',
+          borderRadius:9, borderSkipped:false,
+          barPercentage:.5, categoryPercentage:.72
+        }
       ]},
     options:{responsive:true, maintainAspectRatio:false,
-      scales:{y:{max:100, grid:{color:'rgba(255,255,255,.08)'}}, x:{grid:{display:false}}},
-      plugins:{legend:{labels:{usePointStyle:true, pointStyle:'circle', padding:14, color:'#dbe9ff'}}}
+      scales:{
+        y:{max:100, ticks:{color:'#9fb8d9', callback:function(v){return v+'%';}}, grid:{color:'rgba(255,255,255,.06)'}},
+        x:{ticks:{color:'#dbe9ff', font:{weight:600}}, grid:{display:false}}
+      },
+      plugins:{
+        legend:{labels:{usePointStyle:true, pointStyle:'circle', padding:16, color:'#dbe9ff'}},
+        tooltip:{
+          backgroundColor:'rgba(4,20,40,.92)', titleColor:'#8ecbff', bodyColor:'#eaf3ff',
+          padding:12, cornerRadius:10, displayColors:false,
+          callbacks:{label:function(i){return i.dataset.label+': '+i.parsed.y+'%';}}
+        }
+      }
     }
   });
 
