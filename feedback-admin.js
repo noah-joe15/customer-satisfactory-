@@ -14,13 +14,13 @@ if (window.Chart) {
   Chart.defaults.borderColor = 'rgba(255,255,255,.08)';
 }
 
-// Dedicated SVG icons 
+// Dedicated SVG icons (outline style)
 const ICONS = {
-  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
-  female:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2.6"/><path d="M15.2 7.5H8.8L6.4 15.6h3.2L8.8 22h2.3l.5-6.4h.8l.5 6.4h2.3l-.8-6.4h3.2L15.2 7.5z"/></svg>',
-  male:'<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="4" r="2.6"/><path d="M12 7.5c-3 0-4.8 1.9-4.8 4.8V15h1.9v7h2.2v-7h1.4v7h2.2v-7h1.9v-2.7c0-2.9-1.8-4.8-4.8-4.8z"/></svg>',
-  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
-  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  female:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M12 13v8"/><path d="M9 18h6"/></svg>',
+  male:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="14" r="5"/><path d="M19 5l-5.4 5.4"/><path d="M19 5h-5"/><path d="M19 5v5"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+  star:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'
 };
 
 // ===== LIQUID GLASS TUBE PLUGIN =====
@@ -35,7 +35,6 @@ function rr(ctx,x,y,w,h,r){
 }
 const glassTubes = {
   id:'glassTubes',
-  // glass tube behind each bar
   beforeDatasetsDraw:function(chart){
     var ctx=chart.ctx, y=chart.scales.y;
     var top=y.getPixelForValue(100), bottom=y.getPixelForValue(0);
@@ -54,7 +53,6 @@ const glassTubes = {
       });
     });
   },
-  // shine stripe + meniscus on top of the liquid
   afterDatasetsDraw:function(chart){
     var ctx=chart.ctx, y=chart.scales.y;
     var bottom=y.getPixelForValue(0);
@@ -82,7 +80,7 @@ const glassTubes = {
   }
 };
 
-// ===== AUTH (your existing Supabase client-side auth) =====
+// ===== AUTH =====
 function adminLogin(){
   if(document.getElementById('admPass').value === ADM_PASS){
     sessionStorage.setItem('fbAdmin','1');
@@ -97,14 +95,103 @@ function enterAdmin(){
   loadAll();
 }
 
-// ===== DATA (your existing Supabase query) =====
+// ===== DATA =====
 async function loadAll(){
   var r = await sb.from('survey_responses').select('*').order('created_at',{ascending:false});
   rows = r.data||[];
   renderKpis();
   renderCharts();
+  renderDashCards();
   renderComments();
   renderTable();
+}
+
+// ===== 2x2 DASHBOARD CARDS =====
+function renderDashCards(){
+  renderGenderCard();
+  renderTrendCard();
+  renderBarCard('region','regionBody','regionChip','pin');
+  renderBarCard('district','districtBody','districtChip','users');
+}
+
+function renderGenderCard(){
+  var total=rows.length;
+  var g=countBy('gender');
+  var top=g.length?g[0]:{k:'—',v:0};
+  var cols=['#3b82f6','#ff5e99','#6b6b6b'];
+  var acc=0, stops=[];
+  g.forEach(function(x,i){
+    var seg=total?x.v/total*100:0;
+    stops.push((cols[i]||'#6b6b6b')+' '+acc.toFixed(2)+'% '+(acc+seg).toFixed(2)+'%');
+    acc+=seg;
+  });
+  if(!stops.length) stops.push('rgba(255,255,255,.08) 0% 100%');
+  document.getElementById('gDonut').style.background='conic-gradient('+stops.join(',')+')';
+  document.getElementById('gPct').textContent=pct(top.v,total)+'%';
+  document.getElementById('gLabel').textContent=top.k;
+  document.getElementById('genderChip').innerHTML=
+    '<div class="dc-chip-left"><span class="dc-dot"></span>'+
+    '<span class="dc-chip-txt"><b>'+esc(top.k)+'</b><small>Majority of respondents</small></span></div>'+
+    '<div class="dc-chip-right"><b>'+pct(top.v,total)+'%</b></div>';
+}
+
+function renderTrendCard(){
+  var labels=[],counts=[];
+  for(var i=13;i>=0;i--){
+    var d=new Date(); d.setDate(d.getDate()-i);
+    var key=d.toISOString().slice(0,10);
+    labels.push(d.getDate()+' '+d.toLocaleDateString('en-GB',{month:'short'}));
+    counts.push(rows.filter(function(r){return (r.created_at||'').slice(0,10)===key;}).length);
+  }
+  var max=Math.max.apply(null,counts.concat([1]));
+  var W=560,H=210,PL=10,PR=10,PT=12,PB=10;
+  var step=(W-PL-PR)/(counts.length-1);
+  var pts=counts.map(function(v,i){ return [PL+i*step, H-PB-(v/max)*(H-PT-PB)]; });
+  var line=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
+  var area=line+' L'+pts[pts.length-1][0].toFixed(1)+' '+(H-PB)+' L'+pts[0][0].toFixed(1)+' '+(H-PB)+' Z';
+  var peak=counts.indexOf(max);
+  var dots=pts.map(function(p,i){
+    var halo=(i===peak&&max>0)?'<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="9" fill="rgba(59,130,246,.22)"/>':'';
+    return halo+'<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.2" fill="#3b82f6"/>';
+  }).join('');
+  var xl=[0,3,6,9,13].map(function(i){return '<span>'+labels[i]+'</span>';}).join('');
+  document.getElementById('trendBody').innerHTML=
+    '<span class="spark-y top">'+max+'</span><span class="spark-y bot">0</span>'+
+    '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+    '<defs><linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0" stop-color="rgba(59,130,246,.35)"/><stop offset="1" stop-color="rgba(59,130,246,0)"/>'+
+    '</linearGradient></defs>'+
+    '<line x1="'+PL+'" y1="'+PT+'" x2="'+(W-PR)+'" y2="'+PT+'" stroke="rgba(255,255,255,.08)"/>'+
+    '<path d="'+area+'" fill="url(#trendFill)"/>'+
+    '<path d="'+line+'" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round"/>'+
+    dots+'</svg>'+
+    '<div class="spark-x">'+xl+'</div>';
+  document.getElementById('trendChip').innerHTML=
+    '<div class="dc-chip-left"><span class="dc-chip-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>'+
+    '<span class="dc-chip-txt"><b>Most responses on <span style="color:var(--accent-blue-2)">'+labels[peak]+'</span></b></span></div>'+
+    '<div class="dc-chip-right"><b>'+max+'</b></div>';
+}
+
+function renderBarCard(field,bodyId,chipId,icon){
+  var data=countBy(field).slice(0,4);
+  var total=rows.length;
+  var max=data.length?data[0].v:1;
+  var body=document.getElementById(bodyId);
+  body.innerHTML=data.length?data.map(function(x){
+    var w=Math.max(6,Math.round(x.v/max*100));
+    return '<div class="hbar-row"><span class="hbar-label">'+esc(x.k)+'</span>'+
+      '<span class="hbar-track"><span class="hbar-fill" style="width:'+w+'%"></span></span>'+
+      '<b class="hbar-val">'+x.v+'</b></div>';
+  }).join(''):'<p class="dc-empty">No data yet</p>';
+  var top=data.length?data[0]:{v:0};
+  var icons={
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+    users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'
+  };
+  document.getElementById(chipId).innerHTML=
+    '<div class="dc-chip-left"><span class="dc-chip-ico">'+icons[icon]+'</span>'+
+    '<span class="dc-chip-txt"><b>'+data.length+' '+field+(data.length===1?'':'s')+'</b><small>Total responses</small></span></div>'+
+    '<div class="dc-chip-right"><b>'+top.v+'</b><small>'+pct(top.v,total)+'%</small></div>';
 }
 
 // ===== STATS =====
@@ -140,11 +227,10 @@ function renderKpis(){
     kpiCard(ICONS.star,'gold',avgSat+'%','Avg satisfaction');
 }
 
-// ===== CHARTS (smart sizing, rounded bars, hidden legends on single datasets) =====
+// ===== CHARTS =====
 function destroy(id){ if(charts[id]){ charts[id].destroy(); delete charts[id]; } }
 
 function renderCharts(){
-    // Answer vs satisfaction — LIQUID GLASS TUBES
   destroy('chRate');
   charts.chRate = new Chart(document.getElementById('chRate'), {
     type:'bar',
@@ -195,60 +281,6 @@ function renderCharts(){
           callbacks:{label:function(i){return i.dataset.label+': '+i.parsed.y+'%';}}
         }
       }
-    }
-  });
-
-  // Gender donut
-  destroy('chGender');
-  var g=countBy('gender');
-  charts.chGender = new Chart(document.getElementById('chGender'), {
-    type:'doughnut',
-    data:{ labels:g.map(function(x){return x.k;}),
-      datasets:[{data:g.map(function(x){return x.v;}), backgroundColor:['#4db2ff','#ff5e99','#6b6b6b'], borderColor:'rgba(255,255,255,.15)', borderWidth:1}]},
-    options:{responsive:true, maintainAspectRatio:false, cutout:'62%',
-      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, pointStyle:'circle', padding:14, color:'#dbe9ff'}}}
-    }
-  });
-
-  // Trend
-  destroy('chTrend');
-  var days=[], counts=[];
-  for(var i=13;i>=0;i--){
-    var d=new Date(); d.setDate(d.getDate()-i);
-    var key=d.toISOString().slice(0,10);
-    days.push(d.getDate()+'/'+(d.getMonth()+1));
-    counts.push(rows.filter(function(r){return (r.created_at||'').slice(0,10)===key;}).length);
-  }
-  charts.chTrend = new Chart(document.getElementById('chTrend'), {
-    type:'line',
-    data:{labels:days, datasets:[{label:'Responses', data:counts, borderColor:'#4db2ff', backgroundColor:'rgba(77,178,255,.15)', fill:true, tension:.35, pointRadius:2, borderWidth:2}]},
-    options:{responsive:true, maintainAspectRatio:false,
-      scales:{y:{ticks:{precision:0}, grid:{color:'rgba(255,255,255,.08)'}}, x:{grid:{display:false}}},
-      plugins:{legend:{display:false}}
-    }
-  });
-
-  // Regions
-  destroy('chRegion');
-  var reg=countBy('region').slice(0,8);
-  charts.chRegion = new Chart(document.getElementById('chRegion'), {
-    type:'bar',
-    data:{labels:reg.map(function(x){return x.k;}), datasets:[{data:reg.map(function(x){return x.v;}), backgroundColor:'#4db2ff', borderRadius:6, maxBarThickness:14}]},
-    options:{responsive:true, maintainAspectRatio:false, indexAxis:'y',
-      scales:{x:{ticks:{precision:0}, grid:{color:'rgba(255,255,255,.08)'}}, y:{grid:{display:false}}},
-      plugins:{legend:{display:false}}
-    }
-  });
-
-  // Districts
-  destroy('chDistrict');
-  var dis=countBy('district').slice(0,8);
-  charts.chDistrict = new Chart(document.getElementById('chDistrict'), {
-    type:'bar',
-    data:{labels:dis.map(function(x){return x.k;}), datasets:[{data:dis.map(function(x){return x.v;}), backgroundColor:'#2fb56b', borderRadius:6, maxBarThickness:14}]},
-    options:{responsive:true, maintainAspectRatio:false, indexAxis:'y',
-      scales:{x:{ticks:{precision:0}, grid:{color:'rgba(255,255,255,.08)'}}, y:{grid:{display:false}}},
-      plugins:{legend:{display:false}}
     }
   });
 }
