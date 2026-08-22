@@ -334,13 +334,14 @@ function exportCSV(){
   a.click();
 }
 
-// ===== AI ANALYSIS FOR PDF REPORT =====
+// ===== AUTOMATED ANALYSIS ENGINE =====
 function analyzeSurveyData(){
   var total = rows.length;
   if(total === 0) return { insights: [], recommendations: [] };
 
   var insights = [];
   var recommendations = [];
+  var qNames = ['Overall satisfaction','Professionalism & courtesy','Timeliness of assistance','Clarity of information','Responsiveness to inquiries','Concerns addressed','Service quality','Met expectations','Would recommend'];
 
   var sats = QS.map(function(q){ return qStats(q); });
   var avgSat = sats.reduce(function(a,b){ return a + b.sat; }, 0) / sats.length;
@@ -356,20 +357,16 @@ function analyzeSurveyData(){
 
   var weakest = sats.reduce(function(a,b){ return a.sat < b.sat ? a : b; });
   var weakestIdx = sats.indexOf(weakest);
-  var weakestQ = ['Overall satisfaction','Professionalism & courtesy','Timeliness of assistance','Clarity of information','Responsiveness to inquiries','Concerns addressed','Service quality','Met expectations','Would recommend'][weakestIdx];
-
   if(weakest.sat < 60){
-    insights.push({type:'critical', text:'The weakest area is "'+weakestQ+'" with only '+weakest.sat.toFixed(1)+'% satisfaction.'});
-    recommendations.push('Prioritize improvement in "'+weakestQ+'". Conduct staff training and process review to address this gap.');
+    insights.push({type:'critical', text:'The weakest area is "'+qNames[weakestIdx]+'" with only '+weakest.sat.toFixed(1)+'% satisfaction.'});
+    recommendations.push('Prioritize improvement in "'+qNames[weakestIdx]+'". Conduct staff training and process review to address this gap.');
   }
 
   var strongest = sats.reduce(function(a,b){ return a.sat > b.sat ? a : b; });
   var strongestIdx = sats.indexOf(strongest);
-  var strongestQ = ['Overall satisfaction','Professionalism & courtesy','Timeliness of assistance','Clarity of information','Responsiveness to inquiries','Concerns addressed','Service quality','Met expectations','Would recommend'][strongestIdx];
-
   if(strongest.sat >= 80){
-    insights.push({type:'success', text:'The strongest area is "'+strongestQ+'" with '+strongest.sat.toFixed(1)+'% satisfaction. This is a competitive advantage.'});
-    recommendations.push('Continue maintaining excellence in "'+strongestQ+'". Use this as a model for other service areas.');
+    insights.push({type:'success', text:'The strongest area is "'+qNames[strongestIdx]+'" with '+strongest.sat.toFixed(1)+'% satisfaction. This is a competitive advantage.'});
+    recommendations.push('Continue maintaining excellence in "'+qNames[strongestIdx]+'". Use this as a model for other service areas.');
   }
 
   if(avgRate < 90){
@@ -402,51 +399,37 @@ function analyzeSurveyData(){
 
   var comments = rows.filter(function(r){ return (r.comment||'').trim(); });
   if(comments.length > 0){
-    var keywords = {
-      'slow': 0, 'delay': 0, 'wait': 0, 'time': 0,
-      'staff': 0, 'rude': 0, 'unfriendly': 0, 'courtesy': 0,
-      'information': 0, 'unclear': 0, 'confusing': 0,
-      'expensive': 0, 'cost': 0, 'fee': 0,
-      'online': 0, 'digital': 0, 'system': 0, 'website': 0
-    };
-
+    var keywords = { 'slow':0,'delay':0,'wait':0,'time':0,'staff':0,'rude':0,'unfriendly':0,'information':0,'unclear':0,'confusing':0,'expensive':0,'cost':0,'fee':0,'online':0,'digital':0,'system':0,'website':0 };
     comments.forEach(function(c){
       var text = (c.comment||'').toLowerCase();
-      Object.keys(keywords).forEach(function(kw){
-        if(text.indexOf(kw) > -1) keywords[kw]++;
-      });
+      Object.keys(keywords).forEach(function(kw){ if(text.indexOf(kw) > -1) keywords[kw]++; });
     });
-
-    if(keywords['slow'] + keywords['delay'] + keywords['wait'] + keywords['time'] > comments.length * 0.2){
+    if(keywords.slow + keywords.delay + keywords.wait + keywords.time > comments.length * 0.2){
       insights.push({type:'critical', text:'Multiple respondents mentioned delays, slow service, or long waiting times in their comments.'});
       recommendations.push('Review service delivery timelines. Implement queue management systems and set clear service-level agreements (SLAs) for response times.');
     }
-
-    if(keywords['staff'] + keywords['rude'] + keywords['unfriendly'] > comments.length * 0.15){
+    if(keywords.staff + keywords.rude + keywords.unfriendly > comments.length * 0.15){
       insights.push({type:'critical', text:'Some respondents reported issues with staff attitude, rudeness, or lack of courtesy.'});
-      recommendations.push('Conduct customer service training for all frontline staff. Implement a feedback loop where staff performance is evaluated based on customer satisfaction scores.');
+      recommendations.push('Conduct customer service training for all frontline staff. Link staff performance evaluation to customer satisfaction scores.');
     }
-
-    if(keywords['information'] + keywords['unclear'] + keywords['confusing'] > comments.length * 0.15){
+    if(keywords.information + keywords.unclear + keywords.confusing > comments.length * 0.15){
       insights.push({type:'warning', text:'Respondents mentioned that information was unclear or confusing.'});
-      recommendations.push('Improve communication materials. Create clear, step-by-step guides for all services in both English and Kiswahili. Consider video tutorials.');
+      recommendations.push('Improve communication materials. Create clear step-by-step guides for all services in both English and Kiswahili.');
     }
-
-    if(keywords['expensive'] + keywords['cost'] + keywords['fee'] > comments.length * 0.1){
+    if(keywords.expensive + keywords.cost + keywords.fee > comments.length * 0.1){
       insights.push({type:'warning', text:'Some respondents expressed concerns about costs or fees.'});
-      recommendations.push('Review pricing structure and ensure transparency. Publish a clear fee schedule and consider subsidies or waivers for small businesses where appropriate.');
+      recommendations.push('Review the pricing structure and ensure transparency. Publish a clear fee schedule for all services.');
     }
-
-    if(keywords['online'] + keywords['digital'] + keywords['system'] + keywords['website'] > comments.length * 0.2){
+    if(keywords.online + keywords.digital + keywords.system + keywords.website > comments.length * 0.2){
       insights.push({type:'warning', text:'Respondents mentioned issues with online systems, digital platforms, or the website.'});
-      recommendations.push('Invest in digital infrastructure. Improve the TanTrade website and online service portals. Ensure mobile-friendly design and reliable uptime.');
+      recommendations.push('Invest in digital infrastructure. Improve the TanTrade website and online service portals with mobile-friendly design.');
     }
   }
 
   var q9Sat = qStats('q9').sat;
   if(q9Sat < 70){
     insights.push({type:'critical', text:'Only '+q9Sat.toFixed(1)+'% of respondents would recommend TanTrade services to others. This indicates a risk to reputation and growth.'});
-    recommendations.push('Launch a customer experience improvement program. Focus on the top 3 pain points identified in this report. Track progress with quarterly surveys.');
+    recommendations.push('Launch a customer experience improvement programme focused on the top pain points identified in this report, tracked with quarterly surveys.');
   }
 
   recommendations.push('Establish a quarterly customer satisfaction survey to track progress and identify emerging issues early.');
@@ -456,106 +439,109 @@ function analyzeSurveyData(){
   return { insights: insights, recommendations: recommendations };
 }
 
-// ===== IMAGE LOADER FOR PDF (LOGO + NATIONAL EMBLEM) =====
-function loadImageData(src){
+// ===== IMAGE LOADER (LOGO + NATIONAL EMBLEM, WEBP-SAFE) =====
+function loadImageData(srcs){
+  srcs = Array.isArray(srcs) ? srcs : [srcs];
   return new Promise(function(res){
-    var img=new Image();
-    img.onload=function(){
-      try{
-        var c=document.createElement('canvas');
-        c.width=img.naturalWidth||300;
-        c.height=img.naturalHeight||300;
-        var ctx=c.getContext('2d');
-        ctx.fillStyle='#ffffff';
-        ctx.fillRect(0,0,c.width,c.height);
-        ctx.drawImage(img,0,0,c.width,c.height);
-        res({data:c.toDataURL('image/png'), ratio:(c.width/c.height)||1});
-      }catch(e){res(null);}
-    };
-    img.onerror=function(){res(null);};
-    img.src=src;
+    var i = 0;
+    function next(){
+      if(i >= srcs.length){ res(null); return; }
+      var img = new Image();
+      img.onload = function(){
+        try{
+          var c = document.createElement('canvas');
+          c.width = img.naturalWidth || 300;
+          c.height = img.naturalHeight || 300;
+          var ctx = c.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0,0,c.width,c.height);
+          ctx.drawImage(img,0,0,c.width,c.height);
+          res({ data: c.toDataURL('image/png'), ratio: (c.width/c.height) || 1 });
+        }catch(e){ res(null); }
+      };
+      img.onerror = function(){ i++; next(); };
+      img.src = srcs[i];
+    }
+    next();
   });
 }
 
-// ===== PDF REPORT GENERATOR (COMPACT HEADER + EMBLEM) =====
+// ===== PDF REPORT GENERATOR (COMPACT OFFICIAL COVER) =====
 async function generateReportPDF(){
   if(!window.jspdf || !window.jspdf.jsPDF){ alert('PDF library still loading. Please try again.'); return; }
   if(rows.length === 0){ alert('No survey responses to report.'); return; }
 
-  // Load logo and national emblem (file name with space)
-  var logo = await loadImageData('tantrade-logo.png');
-  var emblem = await loadImageData('national emblem.webp');
+  var logo = await loadImageData(['tantrade-logo.png']);
+  var emblem = await loadImageData(['emblem.webp','national%20emblem.webp','national emblem.webp','emblem.png','national-emblem.webp']);
 
   var doc = new window.jspdf.jsPDF('p','mm','a4');
   var pageWidth = doc.internal.pageSize.getWidth();
   var pageHeight = doc.internal.pageSize.getHeight();
   var margin = 14;
+  var bandH = 34;
 
-  // ===== COMPACT COVER PAGE (40mm blue band instead of 60mm) =====
-  var bandH = 40;
+  // ===== COVER PAGE (compact band) =====
   doc.setFillColor(0, 60, 113);
   doc.rect(0, 0, pageWidth, bandH, 'F');
   doc.setFillColor(0, 133, 74);
-  doc.rect(0, bandH, pageWidth, 2.5, 'F');
+  doc.rect(0, bandH, pageWidth, 2, 'F');
 
-  // TANTRADE logo — TOP LEFT (smaller, compact)
+  // TANTRADE logo — top left
   if(logo){
-    var lh=14, lw=lh*logo.ratio;
-    if(lw>34){ lw=34; lh=lw/logo.ratio; }
-    var bw=lw+4, bh=lh+4;
+    var lh = 16, lw = lh * logo.ratio;
+    if(lw > 34){ lw = 34; lh = lw / logo.ratio; }
+    var bw = lw + 4, bh = lh + 4;
     doc.setFillColor(255,255,255);
-    doc.roundedRect(margin, (bandH-bh)/2, bw, bh, 2, 2, 'F');
-    doc.addImage(logo.data,'PNG', margin+2, (bandH-lh)/2, lw, lh);
+    doc.roundedRect(margin, (bandH - bh) / 2, bw, bh, 2, 2, 'F');
+    doc.addImage(logo.data, 'PNG', margin + 2, (bandH - lh) / 2, lw, lh);
   }
 
-  // National emblem — TOP RIGHT (smaller, compact)
+  // National emblem — top right
   if(emblem){
-    var eh=22, ew=eh*emblem.ratio;
-    if(ew>22){ ew=22; eh=ew/emblem.ratio; }
+    var eh = 26, ew = eh * emblem.ratio;
+    if(ew > 26){ ew = 26; eh = ew / emblem.ratio; }
     doc.setFillColor(255,255,255);
-    doc.roundedRect(pageWidth-margin-ew-3, (bandH-eh)/2-1, ew+3, eh+3, 2, 2, 'F');
-    doc.addImage(emblem.data,'PNG', pageWidth-margin-ew-1.5, (bandH-eh)/2+0.5, ew, eh);
+    doc.roundedRect(pageWidth - margin - ew - 3, (bandH - eh - 4) / 2, ew + 3, eh + 4, 2, 2, 'F');
+    doc.addImage(emblem.data, 'PNG', pageWidth - margin - ew - 1.5, (bandH - eh) / 2, ew, eh);
   }
 
-  // Centered titles (adjusted for 40mm band)
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.text('TANTRADE', pageWidth / 2, 16, { align: 'center' });
-  doc.setFontSize(8);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Tanzania Trade Development Authority', pageWidth / 2, 21, { align: 'center' });
-
-  doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Customer Service Satisfaction Report', pageWidth / 2, 32, { align: 'center' });
+  doc.setTextColor(255,255,255);
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(15);
+  doc.text('TANTRADE', pageWidth / 2, 13, { align: 'center' });
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(8.5);
+  doc.text('Tanzania Trade Development Authority', pageWidth / 2, 19, { align: 'center' });
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(12);
+  doc.text('Customer Service Satisfaction Report', pageWidth / 2, 28, { align: 'center' });
 
   doc.setTextColor(92, 107, 122);
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Generated on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), pageWidth / 2, 52, { align: 'center' });
-  doc.text('Total Responses: ' + rows.length, pageWidth / 2, 58, { align: 'center' });
+  doc.setFont('helvetica','normal');
+  doc.text('Generated on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), pageWidth / 2, bandH + 14, { align: 'center' });
+  doc.text('Total Responses: ' + rows.length, pageWidth / 2, bandH + 20, { align: 'center' });
 
   // ===== EXECUTIVE SUMMARY =====
   doc.addPage();
   doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('helvetica','bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Executive Summary', margin, 20);
 
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('helvetica','normal');
   doc.setTextColor(16, 24, 38);
 
   var total = rows.length;
   var female = rows.filter(function(r){ return r.gender === 'Female'; }).length;
   var male = rows.filter(function(r){ return r.gender === 'Male'; }).length;
-  var regions = countBy('region').length;
+  var regionsCount = countBy('region').length;
   var sats = QS.map(function(q){ return qStats(q).sat; });
   var avgSat = sats.reduce(function(a,b){ return a + b; }, 0) / sats.length;
 
   var summaryText = 'This report analyzes ' + total + ' customer satisfaction survey responses collected from TANTRADE service users. ';
-  summaryText += 'The respondents include ' + female + ' female (' + ((female/total)*100).toFixed(1) + '%) and ' + male + ' male (' + ((male/total)*100).toFixed(1) + '%) participants from ' + regions + ' different regions across Tanzania. ';
+  summaryText += 'The respondents include ' + female + ' female (' + ((female/total)*100).toFixed(1) + '%) and ' + male + ' male (' + ((male/total)*100).toFixed(1) + '%) participants from ' + regionsCount + ' different regions across Tanzania. ';
   summaryText += 'The overall average satisfaction rate is ' + avgSat.toFixed(1) + '%.';
 
   var summaryLines = doc.splitTextToSize(summaryText, pageWidth - 2*margin);
@@ -564,27 +550,24 @@ async function generateReportPDF(){
   // ===== KEY FINDINGS =====
   var yPos = 30 + (summaryLines.length * 5) + 10;
   doc.setFontSize(14);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('helvetica','bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Key Findings', margin, yPos);
   yPos += 8;
 
   var analysis = analyzeSurveyData();
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('helvetica','normal');
 
   analysis.insights.forEach(function(insight){
-    if(yPos > pageHeight - 30){
-      doc.addPage();
-      yPos = 20;
-    }
-    var color = insight.type === 'success' ? [0, 133, 74] : insight.type === 'critical' ? [214, 69, 69] : [202, 138, 4];
+    if(yPos > pageHeight - 30){ doc.addPage(); yPos = 20; }
+    var color = insight.type === 'success' ? [0,133,74] : insight.type === 'critical' ? [214,69,69] : [202,138,4];
     doc.setTextColor(color[0], color[1], color[2]);
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('helvetica','bold');
     var icon = insight.type === 'success' ? '[+]' : insight.type === 'critical' ? '[!]' : '[~]';
     doc.text(icon + ' ', margin, yPos);
     doc.setTextColor(16, 24, 38);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica','normal');
     var lines = doc.splitTextToSize(insight.text, pageWidth - 2*margin - 10);
     doc.text(lines, margin + 10, yPos);
     yPos += (lines.length * 5) + 3;
@@ -593,7 +576,7 @@ async function generateReportPDF(){
   // ===== DEMOGRAPHICS =====
   doc.addPage();
   doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('helvetica','bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Demographics', margin, 20);
 
@@ -613,11 +596,11 @@ async function generateReportPDF(){
   // ===== QUESTION ANALYSIS =====
   doc.addPage();
   doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('helvetica','bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Question-by-Question Analysis', margin, 20);
 
-  var qLabels = ['Q1: Overall satisfaction', 'Q2: Professionalism', 'Q3: Timeliness', 'Q4: Clarity', 'Q5: Responsiveness', 'Q6: Concerns addressed', 'Q7: Service quality', 'Q8: Met expectations', 'Q9: Would recommend'];
+  var qLabels = ['Q1: Overall satisfaction','Q2: Professionalism','Q3: Timeliness','Q4: Clarity','Q5: Responsiveness','Q6: Concerns addressed','Q7: Service quality','Q8: Met expectations','Q9: Would recommend'];
   var qData = QS.map(function(q, i){
     var stats = qStats(q);
     return [qLabels[i], stats.rate + '%', stats.sat + '%'];
@@ -636,23 +619,20 @@ async function generateReportPDF(){
   // ===== AUTOMATED RECOMMENDATIONS =====
   doc.addPage();
   doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('helvetica','bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Automated Recommendations', margin, 20);
 
   doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('helvetica','normal');
   doc.setTextColor(16, 24, 38);
 
   var recY = 30;
   analysis.recommendations.forEach(function(rec, idx){
-    if(recY > pageHeight - 30){
-      doc.addPage();
-      recY = 20;
-    }
-    doc.setFont('helvetica', 'bold');
+    if(recY > pageHeight - 30){ doc.addPage(); recY = 20; }
+    doc.setFont('helvetica','bold');
     doc.text((idx + 1) + '. ', margin, recY);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont('helvetica','normal');
     var lines = doc.splitTextToSize(rec, pageWidth - 2*margin - 10);
     doc.text(lines, margin + 10, recY);
     recY += (lines.length * 5) + 4;
@@ -661,7 +641,7 @@ async function generateReportPDF(){
   // ===== RAW RESPONSES =====
   doc.addPage();
   doc.setFontSize(16);
-  doc.setFont('helvetica', 'bold');
+  doc.setFont('helvetica','bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Raw Response Data (First 50)', margin, 20);
 
