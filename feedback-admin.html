@@ -6,8 +6,8 @@
 <title>TANTRADE Feedback — Admin Dashboard</title>
 <link rel="icon" type="image/png" href="tantrade-logo.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="feedback.css?v=2">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="feedback.css?v=5">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body class="admin-page">
 
@@ -34,16 +34,17 @@
   <div id="admBox" class="hidden">
     <div class="adm-top">
       <h1>Customer Satisfaction Dashboard</h1>
-     <div class="adm-actions">
-  <button class="btn-w" onclick="loadAll()">Refresh</button>
-  <button class="btn-g" onclick="exportCSV()">Export CSV</button>
-  <button class="btn-g" onclick="generateReportPDF()">Generate PDF Report</button>
-  <button class="btn-w" onclick="adminLogout()">Logout</button>
-</div>
+      <div class="adm-actions">
+        <button class="btn-w" onclick="loadAll()">Refresh</button>
+        <button class="btn-g" onclick="exportCSV()">Export CSV</button>
+        <button class="btn-g" onclick="generateReportPDF()">Generate PDF Report</button>
+        <button class="btn-w" onclick="adminLogout()">Logout</button>
+      </div>
+    </div>
 
     <div class="kpi-row" id="kpiRow"></div>
 
-            <div class="chart-grid">
+    <div class="chart-grid">
       <div class="chart-card glass wide"><h3>Answer rate vs satisfaction rate per question (%)</h3><div class="chart-body tall"><canvas id="chRate"></canvas></div></div>
     </div>
 
@@ -109,12 +110,13 @@
       <div class="chart-card glass wide"><h3>Recent responses</h3><div class="tbl-wrap scroll-box"><table class="fb-tbl" id="respTable"></table></div></div>
     </div>
 
+  </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script> 
-<script src="feedback-admin.js?v=2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="feedback-admin.js?v=5"></script>
 </body>
 </html>
