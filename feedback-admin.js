@@ -472,48 +472,53 @@ async function generateReportPDF(){
   var pageHeight = doc.internal.pageSize.getHeight();
   var margin = 14;
 
-  // ===== COVER PAGE =====
-  doc.setFillColor(0, 60, 113);
-  doc.rect(0, 0, pageWidth, 60, 'F');
-  doc.setFillColor(0, 133, 74);
-  doc.rect(0, 60, pageWidth, 3, 'F');
+  // ===== PROFESSIONAL COVER (like MERIDIAN reference) =====
+  var stripH = 26;                 // white header strip (logos sit directly)
+  var bandY = stripH;              // blue title band
+  var bandH = 16;
+  var stripeY = bandY + bandH;     // thin green accent
 
-  // TANTRADE logo — TOP LEFT
+  // White header strip (page is already white; logos blend in, no chips)
   if(logo){
-    var lh=20, lw=lh*logo.ratio;
-    if(lw>46){ lw=46; lh=lw/logo.ratio; }
-    var bw=lw+6, bh=lh+6;
-    doc.setFillColor(255,255,255);
-    doc.roundedRect(margin, 30-bh/2, bw, bh, 2.5, 2.5, 'F');
-    doc.addImage(logo.data,'PNG', margin+3, 30-lh/2, lw, lh);
+    var lh = 16, lw = lh * logo.ratio;
+    if(lw > 40){ lw = 40; lh = lw / logo.ratio; }
+    doc.addImage(logo.data, 'PNG', margin, (stripH - lh) / 2, lw, lh);
+  }
+  if(emblem){
+    var eh = 22, ew = eh * emblem.ratio;
+    if(ew > 24){ ew = 24; eh = ew / emblem.ratio; }
+    doc.addImage(emblem.data, 'PNG', pageWidth - margin - ew, (stripH - eh) / 2, ew, eh);
   }
 
-  // National emblem — TOP RIGHT
-  if(emblem){
-    var eh=30, ew=eh*emblem.ratio;
-    if(ew>30){ ew=30; eh=ew/emblem.ratio; }
-    doc.setFillColor(255,255,255);
-    doc.roundedRect(pageWidth-margin-ew-4, 30-eh/2-2, ew+4, eh+4, 2.5, 2.5, 'F');
-    doc.addImage(emblem.data,'PNG', pageWidth-margin-ew-2, 30-eh/2, ew, eh);
-  }
+  // Organisation name centred in the white strip
+  doc.setTextColor(0, 60, 113);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(14);
+  doc.text('TANTRADE', pageWidth / 2, 11, { align: 'center' });
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(92, 107, 122);
+  doc.text('Tanzania Trade Development Authority', pageWidth / 2, 17, { align: 'center' });
+
+  // Blue title band + thin green accent
+  doc.setFillColor(0, 60, 113);
+  doc.rect(0, bandY, pageWidth, bandH, 'F');
+  doc.setFillColor(0, 133, 74);
+  doc.rect(0, stripeY, pageWidth, 1.5, 'F');
 
   doc.setTextColor(255, 255, 255);
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(24);
-  doc.text('TANTRADE', pageWidth / 2, 25, { align: 'center' });
-  doc.setFontSize(11);
+  doc.setFontSize(13);
+  doc.text('CUSTOMER SERVICE SATISFACTION REPORT', margin, bandY + 10.5);
   doc.setFont('helvetica', 'normal');
-  doc.text('Tanzania Trade Development Authority', pageWidth / 2, 33, { align: 'center' });
+  doc.setFontSize(8);
+  doc.text('Generated: ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), pageWidth - margin, bandY + 10.5, { align: 'right' });
 
-  doc.setFontSize(18);
-  doc.setFont('helvetica', 'bold');
-  doc.text('Customer Service Satisfaction Report', pageWidth / 2, 48, { align: 'center' });
-
+  // Meta line under the band
   doc.setTextColor(92, 107, 122);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text('Generated on ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), pageWidth / 2, 75, { align: 'center' });
-  doc.text('Total Responses: ' + rows.length, pageWidth / 2, 82, { align: 'center' });
+  doc.text('Total Responses: ' + rows.length, pageWidth / 2, stripeY + 12, { align: 'center' });
 
   // ===== EXECUTIVE SUMMARY =====
   doc.addPage();
@@ -553,11 +558,8 @@ async function generateReportPDF(){
   doc.setFont('helvetica', 'normal');
 
   analysis.insights.forEach(function(insight){
-    if(yPos > pageHeight - 30){
-      doc.addPage();
-      yPos = 20;
-    }
-    var color = insight.type === 'success' ? [0, 133, 74] : insight.type === 'critical' ? [214, 69, 69] : [202, 138, 4];
+    if(yPos > pageHeight - 30){ doc.addPage(); yPos = 20; }
+    var color = insight.type === 'success' ? [0,133,74] : insight.type === 'critical' ? [214,69,69] : [202,138,4];
     doc.setTextColor(color[0], color[1], color[2]);
     doc.setFont('helvetica', 'bold');
     var icon = insight.type === 'success' ? '[+]' : insight.type === 'critical' ? '[!]' : '[~]';
@@ -596,7 +598,7 @@ async function generateReportPDF(){
   doc.setTextColor(0, 60, 113);
   doc.text('Question-by-Question Analysis', margin, 20);
 
-  var qLabels = ['Q1: Overall satisfaction', 'Q2: Professionalism', 'Q3: Timeliness', 'Q4: Clarity', 'Q5: Responsiveness', 'Q6: Concerns addressed', 'Q7: Service quality', 'Q8: Met expectations', 'Q9: Would recommend'];
+  var qLabels = ['Q1: Overall satisfaction','Q2: Professionalism','Q3: Timeliness','Q4: Clarity','Q5: Responsiveness','Q6: Concerns addressed','Q7: Service quality','Q8: Met expectations','Q9: Would recommend'];
   var qData = QS.map(function(q, i){
     var stats = qStats(q);
     return [qLabels[i], stats.rate + '%', stats.sat + '%'];
@@ -625,16 +627,13 @@ async function generateReportPDF(){
 
   var recY = 30;
   analysis.recommendations.forEach(function(rec, idx){
-    if(recY > pageHeight - 30){
-      doc.addPage();
-      recY = 20;
-    }
+    if(recY > pageHeight - 30){ doc.addPage(); recY = 20; }
     doc.setFont('helvetica', 'bold');
     doc.text((idx + 1) + '. ', margin, recY);
     doc.setFont('helvetica', 'normal');
-    var lines = doc.splitTextToSize(rec, pageWidth - 2*margin - 10);
-    doc.text(lines, margin + 10, recY);
-    recY += (lines.length * 5) + 4;
+    var rLines = doc.splitTextToSize(rec, pageWidth - 2*margin - 10);
+    doc.text(rLines, margin + 10, recY);
+    recY += (rLines.length * 5) + 4;
   });
 
   // ===== RAW RESPONSES =====
@@ -664,14 +663,17 @@ async function generateReportPDF(){
     headStyles: { fillColor: [0, 87, 168], textColor: 255 }
   });
 
-  // ===== FOOTER =====
+  // ===== SLIM PROFESSIONAL FOOTER =====
   var pageCount = doc.getNumberOfPages();
   for(var i = 1; i <= pageCount; i++){
     doc.setPage(i);
-    doc.setFontSize(8);
-    doc.setTextColor(92, 107, 122);
-    doc.text('TANTRADE Customer Satisfaction Report', margin, pageHeight - 8);
-    doc.text('Page ' + i + ' of ' + pageCount, pageWidth - margin, pageHeight - 8, { align: 'right' });
+    doc.setDrawColor(0, 133, 74);
+    doc.setLineWidth(0.4);
+    doc.line(margin, pageHeight - 6, pageWidth - margin, pageHeight - 6);
+    doc.setFontSize(7.5);
+    doc.setTextColor(120, 130, 145);
+    doc.text('TANTRADE Customer Satisfaction Report', margin, pageHeight - 3.5);
+    doc.text('Page ' + i + ' of ' + pageCount, pageWidth - margin, pageHeight - 3.5, { align: 'right' });
   }
 
   doc.save('TANTRADE-Survey-Report-' + new Date().toISOString().slice(0,10) + '.pdf');
