@@ -614,3 +614,8 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 .hbar-track{flex:1;height:14px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
 .hbar-fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 14px var(--glow);transition:width .8s ease}
 .hbar-val{flex:none;color:#fff;font-weight:800;font-size:14px}
+
+/* ===== GENDER CHIP: STACKED MALE + FEMALE ROWS ===== */
+.dc-chip--stack{flex-direction:column;align-items:stretch;gap:12px}
+.dc-grow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.dc-grow .dc-chip-right b{font-size:15px}
