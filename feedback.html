@@ -24,7 +24,22 @@
   </div>
 </header>
 
-<main class="fb-main">
+<main class="fb-main fb-split">
+
+  <!-- SIDE IMAGE PANEL -->
+  <div class="fb-visual">
+    <img src="customer.webp" alt="TANTRADE customer service">
+    <div class="fb-visual-glass">
+      <h2 data-i18n="vizTitle">Your feedback matters</h2>
+      <p data-i18n="vizSub">It takes less than 2 minutes to help us serve you better.</p>
+      <div class="viz-chips">
+        <span class="viz-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><b data-i18n="vizChip1">2 minutes</b></span>
+        <span class="viz-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><b data-i18n="vizChip2">English / Kiswahili</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="fb-forms">
 
   <!-- STEP 1: PERSONAL INFO -->
   <div class="fb-card" id="stepPersonal">
@@ -64,6 +79,7 @@
     <button class="fb-btn ghost" onclick="location.reload()" data-i18n="again">Submit another response</button>
   </div>
 
+  </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
