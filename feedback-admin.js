@@ -10,8 +10,10 @@ let charts = {};
 // Chart.js global theme
 if (window.Chart) {
   Chart.defaults.font.family = "'Inter',sans-serif";
-  Chart.defaults.color = '#9fb8d9';
-  Chart.defaults.borderColor = 'rgba(255,255,255,.08)';
+ if (window.Chart) {
+  Chart.defaults.font.family = "'Inter',sans-serif";
+   Chart.defaults.color = '#5c6b7a';
+  Chart.defaults.borderColor = 'rgba(28,37,48,.08)';
 }
 
 // Dedicated SVG icons (outline style)
@@ -44,9 +46,9 @@ const glassTubes = {
         ctx.save();
         ctx.beginPath();
         rr(ctx,x-w/2,top-6,w,(bottom-top)+12,w/2);
-        ctx.fillStyle='rgba(255,255,255,.05)';
+               ctx.fillStyle='rgba(28,37,48,.04)';
         ctx.fill();
-        ctx.strokeStyle='rgba(255,255,255,.20)';
+        ctx.strokeStyle='rgba(28,37,48,.16)';
         ctx.lineWidth=1;
         ctx.stroke();
         ctx.restore();
@@ -282,11 +284,11 @@ function renderCharts(){
       ]},
     options:{responsive:true, maintainAspectRatio:false,
       scales:{
-        y:{max:100, ticks:{color:'#9fb8d9', callback:function(v){return v+'%';}}, grid:{color:'rgba(255,255,255,.06)'}},
-        x:{ticks:{color:'#dbe9ff', font:{weight:600}}, grid:{display:false}}
+               y:{max:100, ticks:{color:'#5c6b7a', callback:function(v){return v+'%';}}, grid:{color:'rgba(28,37,48,.06)'}},
+        x:{ticks:{color:'#1c2530', font:{weight:600}}, grid:{display:false}}
       },
       plugins:{
-        legend:{labels:{usePointStyle:true, pointStyle:'circle', padding:16, color:'#dbe9ff'}},
+                legend:{labels:{usePointStyle:true, pointStyle:'circle', padding:16, color:'#1c2530'}},
         tooltip:{
           backgroundColor:'rgba(4,20,40,.92)', titleColor:'#8ecbff', bodyColor:'#eaf3ff',
           padding:12, cornerRadius:10, displayColors:false,
