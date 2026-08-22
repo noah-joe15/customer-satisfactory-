@@ -118,21 +118,37 @@ function renderGenderCard(){
   var total=rows.length;
   var g=countBy('gender');
   var top=g.length?g[0]:{k:'—',v:0};
-  var cols=['#3b82f6','#ff5e99','#6b6b6b'];
+
+  // fixed colors so Male is always blue, Female always pink (donut + chips match)
+  function gcol(k){
+    if(k==='Male') return '#3b82f6';
+    if(k==='Female') return '#ff5e99';
+    return '#6b6b6b';
+  }
+
+  // donut segments
   var acc=0, stops=[];
-  g.forEach(function(x,i){
+  g.forEach(function(x){
     var seg=total?x.v/total*100:0;
-    stops.push((cols[i]||'#6b6b6b')+' '+acc.toFixed(2)+'% '+(acc+seg).toFixed(2)+'%');
+    stops.push(gcol(x.k)+' '+acc.toFixed(2)+'% '+(acc+seg).toFixed(2)+'%');
     acc+=seg;
   });
   if(!stops.length) stops.push('rgba(255,255,255,.08) 0% 100%');
   document.getElementById('gDonut').style.background='conic-gradient('+stops.join(',')+')';
+
+  // center overlay (majority)
   document.getElementById('gPct').textContent=pct(top.v,total)+'%';
   document.getElementById('gLabel').textContent=top.k;
-  document.getElementById('genderChip').innerHTML=
-    '<div class="dc-chip-left"><span class="dc-dot"></span>'+
-    '<span class="dc-chip-txt"><b>'+esc(top.k)+'</b><small>Majority of respondents</small></span></div>'+
-    '<div class="dc-chip-right"><b>'+pct(top.v,total)+'%</b></div>';
+
+  // footer: BOTH genders with count + percentage
+  document.getElementById('genderChip').innerHTML = g.length ? g.map(function(x){
+    var col=gcol(x.k);
+    return '<div class="dc-grow">'+
+      '<div class="dc-chip-left"><span class="dc-dot" style="background:'+col+';box-shadow:0 0 10px '+col+'"></span>'+
+      '<span class="dc-chip-txt"><b>'+esc(x.k)+'</b><small>'+x.v+' respondent'+(x.v===1?'':'s')+'</small></span></div>'+
+      '<div class="dc-chip-right"><b style="color:'+col+'">'+pct(x.v,total)+'%</b></div>'+
+      '</div>';
+  }).join('') : '<p class="dc-empty">No data yet</p>';
 }
 
 function renderTrendCard(){
