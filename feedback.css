@@ -711,3 +711,47 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 
 .admin-page .scroll-box{scrollbar-color:rgba(28,37,48,.25) transparent}
 .admin-page .scroll-box::-webkit-scrollbar-thumb{background:rgba(28,37,48,.22)}
+
+/* =====================================================
+   SURGICAL TWEAK — COMPACT DASHBOARD TRAYS (v13)
+   ===================================================== */
+.dash-grid{gap:16px;padding:20px 12px}
+@media(min-width:769px){.dash-grid{gap:20px;padding:24px 16px}}
+
+/* Kill the giant fixed height — let content decide */
+.dashboard-card{min-height:0;padding:20px;border-radius:20px}
+@media(max-width:768px){.dashboard-card{min-height:0;padding:16px 14px;border-radius:18px}}
+
+/* Tighter header */
+.dc-head{margin-bottom:14px;gap:12px}
+.dc-badge{width:40px;height:40px}
+.dc-badge svg{width:20px;height:20px}
+.dc-titles h3{font-size:16px}
+.dc-titles p{font-size:12px}
+
+/* Smaller donut */
+.dc-body{gap:12px}
+.donut-wrap{width:min(210px,68%)}
+.donut-hole svg{width:20px;height:20px}
+.donut-hole b{font-size:26px}
+.donut-hole span{font-size:13px}
+
+/* Smaller line chart */
+.spark{min-height:170px}
+.spark svg{min-height:130px}
+
+/* Slimmer bars */
+.hbars{gap:10px;padding-top:4px}
+.hbar-label{font-size:12px;width:32%}
+.hbar-track{height:12px}
+.hbar-val{font-size:13px}
+
+/* Compact footer chips */
+.dc-chip{margin-top:14px;padding:12px 14px;border-radius:14px}
+.dc-chip-ico{width:32px;height:32px}
+.dc-chip-ico svg{width:15px;height:15px}
+.dc-chip-txt b{font-size:13px}
+.dc-chip-txt small{font-size:10px}
+.dc-chip-right b{font-size:14px}
+.dc-chip-right small{font-size:10px}
+.dc-grow .dc-chip-right b{font-size:13px}
