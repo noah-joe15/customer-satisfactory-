@@ -469,3 +469,148 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   .chart-body{height:200px}
   .chart-body.tall{height:260px}
 }
+
+/* =====================================================
+   TANTRADE FEEDBACK — 2x2 LIQUID GLASS DASHBOARD SECTION
+   ===================================================== */
+:root{
+  --bg-1:#050b16;
+  --bg-2:#0a1424;
+  --card-bg:rgba(15,26,46,.55);
+  --card-border:rgba(255,255,255,.07);
+  --txt-1:#ffffff;
+  --txt-2:#7c8ba1;
+  --txt-3:#5a6b85;
+  --accent-blue:#3b82f6;
+  --accent-blue-2:#60a5fa;
+  --accent-green:#10b981;
+  --accent-green-2:#34d399;
+  --badge-1:#0d9488;
+  --badge-2:#059669;
+}
+
+/* Page theme override (cleaner than old blobs) */
+.admin-page{
+  background:
+    radial-gradient(900px 500px at 0% 0%, rgba(20,184,166,.08), transparent 60%),
+    radial-gradient(900px 500px at 100% 0%, rgba(59,130,246,.08), transparent 60%),
+    linear-gradient(180deg,var(--bg-1),var(--bg-2));
+}
+.admin-page::before,.admin-page::after{display:none}
+
+/* 2x2 grid */
+.dash-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:24px;
+  max-width:1200px;
+  margin:0 auto;
+  padding:32px 16px;
+}
+@media(max-width:768px){
+  .dash-grid{grid-template-columns:1fr;gap:16px;padding:20px 12px}
+}
+
+/* Shared card */
+.dashboard-card{
+  position:relative;
+  display:flex;flex-direction:column;
+  background:var(--card-bg);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--card-border);
+  border-radius:24px;
+  padding:28px;
+  box-shadow:0 8px 32px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+  min-height:620px;
+  overflow:hidden;
+}
+.dashboard-card::before{
+  content:'';position:absolute;top:-40%;left:-20%;width:140%;height:80%;
+  background:radial-gradient(ellipse at center, rgba(255,255,255,.05), transparent 60%);
+  pointer-events:none;
+}
+@media(max-width:768px){
+  .dashboard-card{min-height:520px;padding:22px 18px;border-radius:20px}
+}
+.card--blue{--accent:var(--accent-blue);--accent-2:var(--accent-blue-2);--accent-soft:rgba(59,130,246,.15);--glow:rgba(59,130,246,.45)}
+.card--green{--accent:var(--accent-green);--accent-2:var(--accent-green-2);--accent-soft:rgba(16,185,129,.15);--glow:rgba(16,185,129,.45)}
+
+/* Card header */
+.dc-head{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.dc-badge{
+  flex:none;width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--badge-1),var(--badge-2));
+  display:flex;align-items:center;justify-content:center;
+  color:#e6fffa;box-shadow:0 6px 18px rgba(13,148,136,.35);
+}
+.dc-badge svg{width:24px;height:24px}
+.dc-titles{flex:1;min-width:0}
+.dc-titles h3{color:var(--txt-1);font-size:19px;font-weight:700;letter-spacing:-.2px}
+.dc-titles p{color:var(--txt-2);font-size:13px;font-weight:400;margin-top:2px}
+.dc-menu{flex:none;background:none;border:none;color:var(--txt-3);cursor:pointer;padding:6px;border-radius:8px;transition:.2s}
+.dc-menu:hover{color:var(--txt-2);background:rgba(255,255,255,.05)}
+.dc-menu svg{width:18px;height:18px;display:block}
+
+/* Body grows, chip pinned bottom */
+.dc-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:0;width:100%}
+.dc-empty{color:var(--txt-2);font-size:13px}
+
+/* Footer chip */
+.dc-chip{
+  margin-top:20px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:16px;
+  padding:16px 20px;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.dc-chip-left{display:flex;align-items:center;gap:12px;min-width:0}
+.dc-chip-ico{
+  flex:none;width:36px;height:36px;border-radius:50%;
+  background:var(--accent-soft);color:var(--accent-2);
+  display:flex;align-items:center;justify-content:center;
+}
+.dc-chip-ico svg{width:17px;height:17px}
+.dc-chip-txt{display:flex;flex-direction:column;min-width:0}
+.dc-chip-txt b{color:var(--txt-1);font-size:14px}
+.dc-chip-txt small{color:var(--txt-2);font-size:11px}
+.dc-chip-right{display:flex;flex-direction:column;align-items:flex-end;text-align:right}
+.dc-chip-right b{color:var(--accent-2);font-size:16px;font-weight:800}
+.dc-chip-right small{color:var(--accent-2);font-size:11px;opacity:.85}
+.dc-dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--glow)}
+
+/* Donut (conic-gradient ring + center overlay) */
+.donut-wrap{position:relative;width:min(320px,78%);aspect-ratio:1}
+.donut{
+  position:absolute;inset:0;border-radius:50%;
+  -webkit-mask:radial-gradient(circle closest-side, transparent 62%, #000 63%);
+  mask:radial-gradient(circle closest-side, transparent 62%, #000 63%);
+  filter:drop-shadow(0 0 24px var(--glow));
+}
+.donut-wrap::after{
+  content:'';position:absolute;top:0;left:50%;width:2px;height:20%;
+  background:var(--bg-2);transform:translateX(-50%);
+}
+.donut-hole{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:4px;text-align:center;
+}
+.donut-hole svg{width:26px;height:26px;color:var(--accent-2)}
+.donut-hole b{color:#fff;font-size:34px;font-weight:800;letter-spacing:-.5px}
+.donut-hole span{color:var(--accent-2);font-size:16px;font-weight:600}
+
+/* Spark line chart */
+.spark{position:relative;width:100%;height:100%;min-height:230px;padding:4px 0 0 22px;display:flex;flex-direction:column}
+.spark svg{width:100%;flex:1;min-height:180px}
+.spark-y{position:absolute;left:0;color:var(--txt-3);font-size:11px;line-height:1}
+.spark-y.top{top:2px}
+.spark-y.bot{bottom:34px}
+.spark-x{display:flex;justify-content:space-between;gap:4px;color:var(--txt-3);font-size:11px;margin-left:22px;padding-top:8px}
+
+/* Horizontal liquid bars */
+.hbars{width:100%;display:flex;flex-direction:column;gap:14px;align-self:stretch;padding-top:8px}
+.hbar-row{display:flex;align-items:center;gap:12px;width:100%}
+.hbar-label{flex:none;width:34%;color:var(--txt-1);font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbar-track{flex:1;height:14px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+.hbar-fill{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 14px var(--glow);transition:width .8s ease}
+.hbar-val{flex:none;color:#fff;font-weight:800;font-size:14px}
