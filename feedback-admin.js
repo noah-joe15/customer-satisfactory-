@@ -10,9 +10,7 @@ let charts = {};
 // Chart.js global theme
 if (window.Chart) {
   Chart.defaults.font.family = "'Inter',sans-serif";
- if (window.Chart) {
-  Chart.defaults.font.family = "'Inter',sans-serif";
-   Chart.defaults.color = '#5c6b7a';
+  Chart.defaults.color = '#5c6b7a';
   Chart.defaults.borderColor = 'rgba(28,37,48,.08)';
 }
 
