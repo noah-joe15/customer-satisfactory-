@@ -786,3 +786,6 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 
 /* Chips sit snug right after the content */
 .dc-chip{margin-top:16px}
+
+/* ===== NANE NANE PERCENTAGE NEXT TO COUNTS (v15) ===== */
+.hbar-pct{font-size:10.5px;font-weight:600;color:var(--txt-3);margin-left:2px}
