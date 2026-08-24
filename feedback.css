@@ -755,3 +755,34 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 .dc-chip-right b{font-size:14px}
 .dc-chip-right small{font-size:10px}
 .dc-grow .dc-chip-right b{font-size:13px}
+
+/* =====================================================
+   SURGICAL TWEAK v14 
+===================================================== 
+Cards hug their own content — no more stretched empty trays 
+.dash-grid{align-items:start}
+
+Content sits at the top instead of floating in empty space
+.dc-body{justify-content:flex-start;gap:10px}
+
+/* Breakdown rows: label left + value right, thin bar below (Nane Nane style) */
+.hbar-row{flex-wrap:wrap;gap:6px 10px;margin-bottom:4px}
+.hbar-label{order:1;flex:1 1 auto;width:auto;font-size:12.5px;font-weight:600}
+.hbar-val{order:2;flex:none;font-size:12.5px}
+.hbar-track{order:3;flex:1 1 100%;height:6px;border-radius:999px}
+.hbar-fill{border-radius:999px}
+
+/* Tighter rhythm between breakdown rows */
+.hbars{gap:12px;padding-top:2px}
+
+/* Slightly smaller donut so the gender tray stays compact */
+.donut-wrap{width:min(190px,64%)}
+.donut-hole b{font-size:24px}
+.donut-hole span{font-size:12px}
+
+/* Shorter line chart */
+.spark{min-height:150px}
+.spark svg{min-height:115px}
+
+/* Chips sit snug right after the content */
+.dc-chip{margin-top:16px}
