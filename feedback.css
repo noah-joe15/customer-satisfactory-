@@ -789,3 +789,30 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 
 /* ===== NANE NANE PERCENTAGE NEXT TO COUNTS (v15) ===== */
 .hbar-pct{font-size:10.5px;font-weight:600;color:var(--txt-3);margin-left:2px}
+
+/* =====================================================
+   SURGICAL TWEAK v16 — LIQUID IN A ROUND GLASS TUBE
+   ===================================================== */
+/* Liquid ring sits INSIDE the tube walls (narrower band) */
+.donut{
+  -webkit-mask:radial-gradient(circle closest-side, transparent 64%, #000 65% 96%, transparent 97%);
+  mask:radial-gradient(circle closest-side, transparent 64%, #000 65% 96%, transparent 97%);
+}
+
+/* Glass tube: walls + liquid curvature shading + shine + separator */
+.donut-wrap::before{
+  content:'';position:absolute;inset:0;border-radius:50%;z-index:1;pointer-events:none;
+  background:
+    conic-gradient(from -1.2deg, rgba(8,14,24,.85) 0 2.4deg, transparent 2.4deg),
+    conic-gradient(from 210deg, rgba(255,255,255,.40), rgba(255,255,255,.12) 45deg, transparent 85deg),
+    radial-gradient(circle closest-side, transparent 62%, rgba(255,255,255,.55) 66%, rgba(255,255,255,.12) 74%, rgba(255,255,255,0) 82%, rgba(0,0,0,.16) 94%, rgba(0,0,0,.26) 96%, transparent 97%),
+    radial-gradient(circle closest-side, transparent 59%, rgba(255,255,255,.85) 60.5% 62.5%, rgba(255,255,255,.25) 63% 64%, transparent 65% 95%, rgba(255,255,255,.25) 96% 97%, rgba(255,255,255,.85) 97.5% 99%, transparent 99.5%);
+  -webkit-mask:radial-gradient(circle closest-side, transparent 58%, #000 59% 100%);
+  mask:radial-gradient(circle closest-side, transparent 58%, #000 59% 100%);
+}
+
+/* Remove the old flat separator line (the glass overlay draws it now) */
+.donut-wrap::after{display:none}
+
+/* Tube depth shadow */
+.donut-wrap{filter:drop-shadow(0 6px 16px rgba(28,37,48,.18))}
