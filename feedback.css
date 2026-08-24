@@ -757,12 +757,12 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 .dc-grow .dc-chip-right b{font-size:13px}
 
 /* =====================================================
-   SURGICAL TWEAK v14 
-===================================================== 
-Cards hug their own content — no more stretched empty trays 
+   SURGICAL TWEAK v14 — NANE NANE BREAKDOWN STYLE
+   ===================================================== */
+/* Cards hug their own content — no more stretched empty trays */
 .dash-grid{align-items:start}
 
-Content sits at the top instead of floating in empty space
+/* Content sits at the top instead of floating in empty space */
 .dc-body{justify-content:flex-start;gap:10px}
 
 /* Breakdown rows: label left + value right, thin bar below (Nane Nane style) */
