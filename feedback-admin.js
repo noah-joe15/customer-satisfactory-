@@ -191,9 +191,10 @@ function renderBarCard(field,bodyId,chipId,icon){
   var body=document.getElementById(bodyId);
   body.innerHTML=data.length?data.map(function(x){
     var w=Math.max(6,Math.round(x.v/max*100));
+    var p=pct(x.v,total);
     return '<div class="hbar-row"><span class="hbar-label">'+esc(x.k)+'</span>'+
       '<span class="hbar-track"><span class="hbar-fill" style="width:'+w+'%"></span></span>'+
-      '<b class="hbar-val">'+x.v+'</b></div>';
+      '<b class="hbar-val">'+x.v+' <small class="hbar-pct">('+p+'%)</small></b></div>';
   }).join(''):'<p class="dc-empty">No data yet</p>';
   var top=data.length?data[0]:{v:0};
   var icons={
@@ -205,7 +206,6 @@ function renderBarCard(field,bodyId,chipId,icon){
     '<span class="dc-chip-txt"><b>'+data.length+' '+field+(data.length===1?'':'s')+'</b><small>Total responses</small></span></div>'+
     '<div class="dc-chip-right"><b>'+top.v+'</b><small>'+pct(top.v,total)+'%</small></div>';
 }
-
 // ===== STATS =====
 function pct(n,d){ return d?Math.round(n/d*100):0; }
 function qStats(q){
