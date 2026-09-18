@@ -8,6 +8,41 @@ window.__ans = {};
 
 const REGIONS = ['Arusha','Dar es Salaam','Dodoma','Geita','Iringa','Kagera','Katavi','Kigoma','Kilimanjaro','Lindi','Manyara','Mara','Mbeya','Morogoro','Mtwara','Mwanza','Njombe','Pemba Kaskazini','Pemba Kusini','Pwani','Rukwa','Ruvuma','Shinyanga','Simiyu','Singida','Songwe','Tabora','Tanga','Unguja Kaskazini','Unguja Kusini','Mjini Magharibi'];
 
+// Complete mapping of Tanzanian Regions to their Districts
+const DISTRICTS = {
+  "Arusha": ["Arusha City", "Arusha", "Karatu", "Longido", "Monduli", "Meru", "Ngorongoro"],
+  "Dar es Salaam": ["Ilala", "Kinondoni", "Temeke", "Ubungo", "Kigamboni"],
+  "Dodoma": ["Dodoma City", "Bahi", "Chamwino", "Chemba", "Kondoa", "Kongwa", "Mpwapwa"],
+  "Geita": ["Geita", "Bukombe", "Chato", "Mbogwe", "Nyang'hwale"],
+  "Iringa": ["Iringa City", "Iringa", "Kilolo", "Mafinga", "Mufindi"],
+  "Kagera": ["Bukoba City", "Bukoba", "Biharamulo", "Karagwe", "Kyerwa", "Missenyi", "Muleba", "Ngara"],
+  "Katavi": ["Mpanda", "Mpanda Mjini", "Nsimbo", "Mlele"],
+  "Kigoma": ["Kigoma", "Kasulu", "Kasulu Mjini", "Kibondo", "Buhigwe", "Uvinza"],
+  "Kilimanjaro": ["Moshi", "Moshi Mjini", "Hai", "Rombo", "Siha", "Same", "Mwanga"],
+  "Lindi": ["Lindi", "Lindi Mjini", "Kilwa", "Liwale", "Nachingwea", "Ruangwa"],
+  "Manyara": ["Babati", "Babati Mjini", "Hanang", "Kiteto", "Mbulu", "Simanjiro"],
+  "Mara": ["Musoma", "Musoma Mjini", "Bunda", "Butiama", "Rorya", "Serengeti", "Tarime"],
+  "Mbeya": ["Mbeya City", "Mbeya", "Chunya", "Mbarali", "Rungwe", "Busokelo", "Kyela"],
+  "Morogoro": ["Morogoro", "Morogoro Mjini", "Gairo", "Kilombero", "Kilosa", "Malinyi", "Mvomero", "Ulanga"],
+  "Mtwara": ["Mtwara", "Mtwara Mjini", "Masasi", "Masasi Mjini", "Nanyumbu", "Newala", "Tandahimba"],
+  "Mwanza": ["Mwanza City", "Ilemela", "Nyamagana", "Kwimba", "Magu", "Misungwi", "Sengerema", "Ukerewe"],
+  "Njombe": ["Njombe", "Njombe Mjini", "Ludewa", "Makambako", "Makete", "Wanging'ombe"],
+  "Pemba Kaskazini": ["Wete", "Micheweni"],
+  "Pemba Kusini": ["Chake Chake", "Mkoani"],
+  "Pwani": ["Kibaha", "Kibaha Mjini", "Bagamoyo", "Chalinze", "Kisarawe", "Mafia", "Mkuranga", "Rufiji"],
+  "Rukwa": ["Sumbawanga", "Sumbawanga Mjini", "Kalambo", "Nkasi"],
+  "Ruvuma": ["Songea", "Songea Mjini", "Mbinga", "Namtumbo", "Nyasa", "Tunduru"],
+  "Shinyanga": ["Shinyanga", "Shinyanga Mjini", "Kahama", "Kahama Mjini", "Kishapu", "Msalala"],
+  "Simiyu": ["Bariadi", "Busega", "Itilima", "Maswa", "Meatu"],
+  "Singida": ["Singida", "Singida Mjini", "Ikungi", "Iramba", "Itigi", "Manyoni", "Mkalama"],
+  "Songwe": ["Vwawa", "Ileje", "Mbozi", "Momba"],
+  "Tabora": ["Tabora", "Tabora Mjini", "Igunga", "Kaliua", "Nzega", "Sikonge", "Urambo", "Uyui"],
+  "Tanga": ["Tanga", "Tanga Mjini", "Handeni", "Handeni Mjini", "Kilindi", "Korogwe", "Korogwe Mjini", "Lushoto", "Muheza", "Pangani"],
+  "Unguja Kaskazini": ["Kaskazini A", "Kaskazini B"],
+  "Unguja Kusini": ["Kusini", "Kati"],
+  "Mjini Magharibi": ["Mjini", "Magharibi"]
+};
+
 const SECTIONS = [
   {id:1, qs:['q1','q2','q3']},
   {id:2, qs:['q4','q5','q6']},
@@ -26,7 +61,7 @@ const T = {
     next:'Continue to questionnaire', back:'Back', submit:'Submit feedback',
     thanksTitle:'Thank you!', thanksMsg:'Your feedback has been recorded successfully.',
     again:'Submit another response',
-        vizTitle:'Your feedback matters',
+    vizTitle:'Your feedback matters',
     vizSub:'It takes less than 2 minutes to help us serve you better.',
     vizChip1:'2 minutes',
     vizChip2:'English / Kiswahili',
@@ -66,7 +101,7 @@ const T = {
     next:'Endelea kwa maswali', back:'Rudi', submit:'Tuma maoni',
     thanksTitle:'Asante!', thanksMsg:'Maoni yako yamehifadhiwa kwa mafanikio.',
     again:'Tuma maoni mengine',
-        vizTitle:'Maoni yako ni muhimu',
+    vizTitle:'Maoni yako ni muhimu',
     vizSub:'Inachukua chini ya dakika 2 kutusaidia kukuhudumia vizuri zaidi.',
     vizChip1:'Dakika 2',
     vizChip2:'Kiswahili / English',
@@ -114,6 +149,24 @@ function applyI18n(){
   });
   document.getElementById('langEn').classList.toggle('active', lang==='en');
   document.getElementById('langSw').classList.toggle('active', lang==='sw');
+}
+
+// NEW: Dynamically populate districts based on selected region
+function updateDistricts() {
+  var region = document.getElementById('fRegion').value;
+  var districtSelect = document.getElementById('fDistrict');
+  
+  // Clear existing options
+  districtSelect.innerHTML = '<option value="">--</option>';
+  
+  if (region && DISTRICTS[region]) {
+    DISTRICTS[region].forEach(function(d) {
+      var o = document.createElement('option');
+      o.value = d;
+      o.textContent = d;
+      districtSelect.appendChild(o);
+    });
+  }
 }
 
 function capture(){
@@ -198,11 +251,16 @@ async function submitSurvey(){
 
 // ===== INIT =====
 (function(){
-  var reg=document.getElementById('fRegion');
+  var reg = document.getElementById('fRegion');
   REGIONS.forEach(function(r){
-    var o=document.createElement('option');
-    o.value=r; o.textContent=r;
+    var o = document.createElement('option');
+    o.value = r; 
+    o.textContent = r;
     reg.appendChild(o);
   });
+  
+  // Listen for region changes to update districts dynamically
+  reg.addEventListener('change', updateDistricts);
+  
   applyI18n();
 })();
