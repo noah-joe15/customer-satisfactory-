@@ -4,6 +4,7 @@ const sb = supabase.createClient(
 );
 const ADM_PASS = 'tantrade@123';
 const QS = ['q1','q2','q3','q4','q5','q6','q7','q8','q9'];
+let allRows = [];
 let rows = [];
 let charts = {};
 
@@ -14,7 +15,6 @@ if (window.Chart) {
   Chart.defaults.borderColor = 'rgba(28,37,48,.08)';
 }
 
-// Dedicated SVG icons (outline style)
 const ICONS = {
   users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
   female:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M12 13v8"/><path d="M9 18h6"/></svg>',
@@ -44,7 +44,7 @@ const glassTubes = {
         ctx.save();
         ctx.beginPath();
         rr(ctx,x-w/2,top-6,w,(bottom-top)+12,w/2);
-               ctx.fillStyle='rgba(28,37,48,.04)';
+        ctx.fillStyle='rgba(28,37,48,.04)';
         ctx.fill();
         ctx.strokeStyle='rgba(28,37,48,.16)';
         ctx.lineWidth=1;
@@ -98,12 +98,60 @@ function enterAdmin(){
 // ===== DATA =====
 async function loadAll(){
   var r = await sb.from('survey_responses').select('*').order('created_at',{ascending:false});
-  rows = r.data||[];
+  allRows = r.data || [];
+  rows = allRows.slice();
+  populateRegionFilter();
+  updateFilterCount();
   renderKpis();
   renderCharts();
   renderDashCards();
   renderComments();
   renderTable();
+}
+
+// ===== FILTER LOGIC =====
+function populateRegionFilter(){
+  var select = document.getElementById('filterRegion');
+  var regionMap = {};
+  allRows.forEach(function(r){ if(r.region) regionMap[r.region] = true; });
+  var regions = Object.keys(regionMap).sort();
+  
+  select.innerHTML = '<option value="">All Regions</option>';
+  regions.forEach(function(r){
+    var opt = document.createElement('option');
+    opt.value = r;
+    opt.textContent = r;
+    select.appendChild(opt);
+  });
+}
+
+function applyFilter(){
+  var selectedRegion = document.getElementById('filterRegion').value;
+  if(selectedRegion){
+    rows = allRows.filter(function(r){ return r.region === selectedRegion; });
+  } else {
+    rows = allRows.slice();
+  }
+  updateFilterCount();
+  renderKpis();
+  renderCharts();
+  renderDashCards();
+  renderComments();
+  renderTable();
+}
+
+function updateFilterCount(){
+  var el = document.getElementById('filterCount');
+  if(el){
+    var selected = document.getElementById('filterRegion').value;
+    var count = rows.length;
+    var total = allRows.length;
+    if(selected){
+      el.textContent = 'Showing ' + count + ' of ' + total + ' responses for ' + selected;
+    } else {
+      el.textContent = 'Showing all ' + total + ' responses';
+    }
+  }
 }
 
 // ===== 2x2 DASHBOARD CARDS =====
@@ -206,6 +254,7 @@ function renderBarCard(field,bodyId,chipId,icon){
     '<span class="dc-chip-txt"><b>'+data.length+' '+field+(data.length===1?'':'s')+'</b><small>Total responses</small></span></div>'+
     '<div class="dc-chip-right"><b>'+top.v+'</b><small>'+pct(top.v,total)+'%</small></div>';
 }
+
 // ===== STATS =====
 function pct(n,d){ return d?Math.round(n/d*100):0; }
 function qStats(q){
@@ -282,11 +331,11 @@ function renderCharts(){
       ]},
     options:{responsive:true, maintainAspectRatio:false,
       scales:{
-               y:{max:100, ticks:{color:'#5c6b7a', callback:function(v){return v+'%';}}, grid:{color:'rgba(28,37,48,.06)'}},
+        y:{max:100, ticks:{color:'#5c6b7a', callback:function(v){return v+'%';}}, grid:{color:'rgba(28,37,48,.06)'}},
         x:{ticks:{color:'#1c2530', font:{weight:600}}, grid:{display:false}}
       },
       plugins:{
-                legend:{labels:{usePointStyle:true, pointStyle:'circle', padding:16, color:'#1c2530'}},
+        legend:{labels:{usePointStyle:true, pointStyle:'circle', padding:16, color:'#1c2530'}},
         tooltip:{
           backgroundColor:'rgba(4,20,40,.92)', titleColor:'#8ecbff', bodyColor:'#eaf3ff',
           padding:12, cornerRadius:10, displayColors:false,
@@ -302,7 +351,7 @@ function renderComments(){
   var el=document.getElementById('commentsList');
   var cmts=rows.filter(function(r){return (r.comment||'').trim();}).slice(0,30);
   el.innerHTML = cmts.length ? cmts.map(function(r){
-    return '<div class="cmt">'+esc(r.comment)+'<small>'+esc(r.name)+' — '+esc(r.region)+', '+new Date(r.created_at).toLocaleDateString()+'</small></div>';
+    return '<div class="cmt">'+esc(r.comment)+'<small>'+esc(r.name)+' — '+esc(r.region)+', '+esc(r.district||'')+' ('+new Date(r.created_at).toLocaleDateString()+')</small></div>';
   }).join('') : '<p style="color:#9fb8d9;font-size:13px">No comments yet.</p>';
 }
 
@@ -472,13 +521,8 @@ async function generateReportPDF(){
   var pageHeight = doc.internal.pageSize.getHeight();
   var margin = 14;
 
-  // ===== PROFESSIONAL COVER (like MERIDIAN reference) =====
-  var stripH = 26;                 // white header strip (logos sit directly)
-  var bandY = stripH;              // blue title band
-  var bandH = 16;
-  var stripeY = bandY + bandH;     // thin green accent
+  var stripH = 26, bandY = stripH, bandH = 16, stripeY = bandY + bandH;
 
-  // White header strip (page is already white; logos blend in, no chips)
   if(logo){
     var lh = 16, lw = lh * logo.ratio;
     if(lw > 40){ lw = 40; lh = lw / logo.ratio; }
@@ -490,7 +534,6 @@ async function generateReportPDF(){
     doc.addImage(emblem.data, 'PNG', pageWidth - margin - ew, (stripH - eh) / 2, ew, eh);
   }
 
-  // Organisation name centred in the white strip
   doc.setTextColor(0, 60, 113);
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(14);
@@ -500,7 +543,6 @@ async function generateReportPDF(){
   doc.setTextColor(92, 107, 122);
   doc.text('Tanzania Trade Development Authority', pageWidth / 2, 17, { align: 'center' });
 
-  // Blue title band + thin green accent
   doc.setFillColor(0, 60, 113);
   doc.rect(0, bandY, pageWidth, bandH, 'F');
   doc.setFillColor(0, 133, 74);
@@ -514,13 +556,11 @@ async function generateReportPDF(){
   doc.setFontSize(8);
   doc.text('Generated: ' + new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }), pageWidth - margin, bandY + 10.5, { align: 'right' });
 
-  // Meta line under the band
   doc.setTextColor(92, 107, 122);
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.text('Total Responses: ' + rows.length, pageWidth / 2, stripeY + 12, { align: 'center' });
 
-  // ===== EXECUTIVE SUMMARY =====
   doc.addPage();
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
@@ -545,7 +585,6 @@ async function generateReportPDF(){
   var summaryLines = doc.splitTextToSize(summaryText, pageWidth - 2*margin);
   doc.text(summaryLines, margin, 30);
 
-  // ===== KEY FINDINGS =====
   var yPos = 30 + (summaryLines.length * 5) + 10;
   doc.setFontSize(14);
   doc.setFont('helvetica', 'bold');
@@ -571,7 +610,6 @@ async function generateReportPDF(){
     yPos += (lines.length * 5) + 3;
   });
 
-  // ===== DEMOGRAPHICS =====
   doc.addPage();
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
@@ -591,7 +629,6 @@ async function generateReportPDF(){
     headStyles: { fillColor: [0, 87, 168], textColor: 255 }
   });
 
-  // ===== QUESTION ANALYSIS =====
   doc.addPage();
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
@@ -614,7 +651,6 @@ async function generateReportPDF(){
     columnStyles: { 0: { cellWidth: 80 } }
   });
 
-  // ===== AUTOMATED RECOMMENDATIONS =====
   doc.addPage();
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
@@ -636,20 +672,21 @@ async function generateReportPDF(){
     recY += (rLines.length * 5) + 4;
   });
 
-  // ===== RAW RESPONSES =====
   doc.addPage();
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(0, 60, 113);
   doc.text('Raw Response Data (First 50)', margin, 20);
 
+  // UPDATED: Added District column to PDF table
   var rawBody = rows.slice(0, 50).map(function(r){
     var q1Text = (r.q1 !== null && r.q1 !== undefined) ? ['Very satisfied','Satisfied','Neutral','Dissatisfied','Very dissatisfied'][r.q1] : '-';
     return [
       new Date(r.created_at).toLocaleDateString(),
-      r.name,
-      r.gender,
-      r.region,
+      r.name || '-',
+      r.gender || '-',
+      r.region || '-',
+      r.district || '-',
       q1Text
     ];
   });
@@ -657,13 +694,20 @@ async function generateReportPDF(){
   doc.autoTable({
     startY: 28,
     margin: { left: margin, right: margin },
-    head: [['Date', 'Name', 'Gender', 'Region', 'Overall Satisfaction']],
+    head: [['Date', 'Name', 'Gender', 'Region', 'District', 'Overall Satisfaction']],
     body: rawBody,
     styles: { font: 'helvetica', fontSize: 8 },
-    headStyles: { fillColor: [0, 87, 168], textColor: 255 }
+    headStyles: { fillColor: [0, 87, 168], textColor: 255 },
+    columnStyles: { 
+      0: { cellWidth: 20 },
+      1: { cellWidth: 35 },
+      2: { cellWidth: 20 },
+      3: { cellWidth: 30 },
+      4: { cellWidth: 30 },
+      5: { cellWidth: 'auto' }
+    }
   });
 
-  // ===== SLIM PROFESSIONAL FOOTER =====
   var pageCount = doc.getNumberOfPages();
   for(var i = 1; i <= pageCount; i++){
     doc.setPage(i);
@@ -678,4 +722,6 @@ async function generateReportPDF(){
 
   doc.save('TANTRADE-Survey-Report-' + new Date().toISOString().slice(0,10) + '.pdf');
 }
+
+// Auto-login for development convenience (remove in production if desired)
 enterAdmin();
