@@ -458,7 +458,7 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 .donut-wrap{filter:drop-shadow(0 6px 16px rgba(28,37,48,.18))}
 
 /* =====================================================
-   IVORY THEME OVERRIDE FOR CUSTOMER PAGE
+   IVORY THEME WITH SOLID GLASS CARD
    ===================================================== */
 .customer-page {
   background: linear-gradient(180deg, #faf7ef, #f3eee1) !important;
@@ -471,27 +471,55 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   display: none !important;
 }
 
-/* Make the form card solid white with a soft shadow */
+/* SOLID GLASS CARD EFFECT */
 .customer-page .fb-card {
-  background: #ffffff !important;
-  border: 1px solid rgba(28, 37, 48, 0.08) !important;
-  box-shadow: 0 20px 50px rgba(28, 37, 48, 0.06) !important;
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 
+    0 8px 32px rgba(28, 37, 48, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.3) !important;
   color: #101826 !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glass shine effect on top */
+.customer-page .fb-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 50% !important;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 100%) !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+/* Make sure content sits above the shine */
+.customer-page .fb-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .customer-page .fb-card h1 {
-  color: #003c71 !important; /* TANTRADE Dark Blue */
+  color: #003c71 !important;
 }
 
 .customer-page .fb-sub {
   color: #5c6b7a !important;
 }
 
-/* Info badges styling for light background */
+/* Info badges with glass effect */
 .customer-page .info-badge {
-  background: rgba(0, 60, 113, 0.06) !important;
-  border: 1px solid rgba(0, 60, 113, 0.12) !important;
+  background: rgba(0, 60, 113, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
   color: #003c71 !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 2px 8px rgba(0, 60, 113, 0.06) !important;
 }
 
 /* Form fields */
@@ -502,28 +530,30 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 .customer-page .fb-field input,
 .customer-page .fb-field select,
 .customer-page .fb-field textarea {
-  background: #ffffff !important;
-  border: 1.5px solid #e3eaf3 !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1.5px solid rgba(227, 234, 243, 0.6) !important;
   color: #101826 !important;
+  backdrop-filter: blur(5px) !important;
 }
 
 .customer-page .fb-field input:focus,
 .customer-page .fb-field select:focus,
 .customer-page .fb-field textarea:focus {
-  background: #ffffff !important;
+  background: rgba(255, 255, 255, 0.9) !important;
   border-color: #0057a8 !important;
-  box-shadow: 0 0 0 3px rgba(0, 87, 168, 0.1) !important;
+  box-shadow: 0 0 0 4px rgba(0, 87, 168, 0.08) !important;
+  outline: none !important;
 }
 
 .customer-page .fb-field input::placeholder,
 .customer-page .fb-field textarea::placeholder {
-  color: #9fb8d9 !important;
+  color: rgba(92, 107, 122, 0.6) !important;
 }
 
-/* Fix select dropdown arrow visibility on white bg */
+/* Fix select dropdown */
 .customer-page .fb-field select {
-  background-image: linear-gradient(#ffffff, #ffffff), url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c6b7a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
-  background-color: #ffffff !important;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235c6b7a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .customer-page .fb-field select option {
@@ -534,7 +564,7 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 /* Questionnaire styling */
 .customer-page .q-sec {
   color: #00854a !important;
-  border-bottom-color: #e3eaf3 !important;
+  border-bottom-color: rgba(227, 234, 243, 0.6) !important;
 }
 
 .customer-page .q-text {
@@ -542,40 +572,58 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
 }
 
 .customer-page .q-opt {
-  background: #ffffff !important;
-  border-color: #e3eaf3 !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  border-color: rgba(227, 234, 243, 0.6) !important;
   color: #101826 !important;
+  backdrop-filter: blur(5px) !important;
 }
 
 .customer-page .q-opt:hover {
-  background: #f8f9fa !important;
-  border-color: #cbd5e1 !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
 }
 
 .customer-page .q-opt:has(input:checked) {
-  background: rgba(0, 133, 74, 0.05) !important;
+  background: rgba(0, 133, 74, 0.1) !important;
   border-color: #00854a !important;
   color: #00854a !important;
 }
 
-/* Buttons */
+/* Buttons with glass effect */
 .customer-page .fb-btn {
-  background: linear-gradient(135deg, #00693b, #00854a) !important;
+  background: linear-gradient(135deg, rgba(0, 105, 59, 0.95), rgba(0, 133, 74, 0.95)) !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 18px rgba(0, 133, 74, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 
+    0 8px 20px rgba(0, 133, 74, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.customer-page .fb-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 105, 59, 1), rgba(0, 133, 74, 1)) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 
+    0 12px 28px rgba(0, 133, 74, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
 }
 
 .customer-page .fb-btn.ghost {
-  background: #f1f5f9 !important;
+  background: rgba(241, 245, 249, 0.6) !important;
   color: #101826 !important;
-  border: 1px solid #e3eaf3 !important;
+  border: 1px solid rgba(227, 234, 243, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.customer-page .fb-btn.ghost:hover {
+  background: rgba(241, 245, 249, 0.9) !important;
 }
 
 /* Success state */
 .customer-page #stepDone .done-icon {
   background: rgba(0, 133, 74, 0.1) !important;
   color: #00854a !important;
-  box-shadow: none !important;
+  box-shadow: 0 4px 12px rgba(0, 133, 74, 0.15) !important;
 }
 
 .customer-page #stepDone h1 {
