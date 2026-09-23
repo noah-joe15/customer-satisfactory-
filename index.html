@@ -91,8 +91,8 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#faf7ef,#f
     </div>
   </div>
   <div class="lang-toggle">
-    <button class="active" onclick="setLang('en')">EN</button>
-    <button onclick="setLang('sw')">SW</button>
+    <button id="langEn" class="active" onclick="setLang('en')">EN</button>
+    <button id="langSw" onclick="setLang('sw')">SW</button>
   </div>
 </header>
 
@@ -202,9 +202,12 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#faf7ef,#f
 <script>
 // Language toggle
 function setLang(lang) {
+  // Remove active class from all buttons
   document.querySelectorAll('.lang-toggle button').forEach(btn => btn.classList.remove('active'));
-  document.getElementById(lang === 'en' ? 'langEn' : 'langSw')?.classList.add('active') || 
-    event.target.classList.add('active');
+  
+  // Add active class to the clicked button
+  const activeBtn = document.getElementById(lang === 'en' ? 'langEn' : 'langSw');
+  if (activeBtn) activeBtn.classList.add('active');
   
   const translations = {
     en: {
@@ -257,11 +260,7 @@ function setLang(lang) {
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (t[key]) {
-      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        el.placeholder = t[key];
-      } else {
-        el.textContent = t[key];
-      }
+      el.textContent = t[key];
     }
   });
 }
@@ -272,13 +271,11 @@ function startSurvey() {
 }
 
 function learnMore() {
-  // Scroll to about section
   document.querySelector('.info-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  // Add smooth scroll behavior
   document.documentElement.style.scrollBehavior = 'smooth';
 });
 </script>
