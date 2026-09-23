@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TANTRADE Customer Feedback | Share Your Experience</title>
+<link rel="icon" type="image/png" href="tantrade-logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0057a8;--blue-dark:#003c71;--green:#00854a;--ink:#101826;--muted:#5c6b7a;--border:#e3eaf3;--card:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#faf7ef,#f3eee1);min-height:100vh;color:var(--ink);line-height:1.6}
+
+/* Header */
+.fb-header{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.6)}
+.fb-brand{display:flex;gap:10px;align-items:center}
+.fb-logo{width:46px;height:36px;object-fit:contain;background:#fff;border-radius:8px;padding:3px}
+.fb-brand b{color:var(--blue-dark);display:block;font-size:15px;letter-spacing:1px}
+.fb-brand span{color:var(--muted);font-size:11px}
+.lang-toggle{display:flex;background:rgba(0,60,113,.08);border-radius:999px;padding:3px}
+.lang-toggle button{border:none;background:transparent;color:var(--muted);font-weight:700;font-size:12px;padding:6px 14px;border-radius:999px;cursor:pointer;transition:.2s}
+.lang-toggle button.active{background:var(--green);color:#fff}
+
+/* Main Content */
+.landing-main{max-width:900px;margin:0 auto;padding:40px 20px 60px}
+
+/* Hero Section */
+.hero{background:rgba(255,255,255,.65);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.6);border-radius:24px;padding:48px 32px;text-align:center;box-shadow:0 8px 32px rgba(28,37,48,.08),inset 0 1px 0 rgba(255,255,255,.9);margin-bottom:32px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.4),transparent);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 20px;background:rgba(0,133,74,.1);border:1px solid rgba(0,133,74,.2);border-radius:999px;font-size:12px;font-weight:700;color:var(--green);margin-bottom:20px}
+.hero h1{font-size:32px;color:var(--blue-dark);margin-bottom:12px;letter-spacing:-.5px;position:relative}
+.hero p{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto 28px;position:relative}
+
+/* CTA Buttons */
+.cta-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative}
+.btn-primary{background:linear-gradient(135deg,#00693b,#00854a);color:#fff;border:none;border-radius:12px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;transition:.25s;box-shadow:0 8px 20px rgba(0,133,74,.25),inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,133,74,.35)}
+.btn-secondary{background:rgba(241,245,249,.9);color:var(--ink);border:1.5px solid var(--border);border-radius:12px;padding:16px 32px;font-size:15px;font-weight:700;cursor:pointer;transition:.25s}
+.btn-secondary:hover{background:#fff;border-color:var(--blue)}
+
+/* Features Grid */
+.features{display:grid;grid-template-columns:1fr;margin-bottom:32px;gap:16px}
+@media(min-width:640px){.features{grid-template-columns:repeat(3,1fr)}}
+.feature-card{background:rgba(255,255,255,.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.5);border-radius:16px;padding:24px 20px;text-align:center;transition:.25s}
+.feature-card:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(28,37,48,.08)}
+.feature-icon{width:48px;height:48px;margin:0 auto 14px;background:rgba(0,87,168,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--blue)}
+.feature-icon svg{width:24px;height:24px}
+.feature-card h3{font-size:14px;color:var(--blue-dark);margin-bottom:6px}
+.feature-card p{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* Info Section */
+.info-section{background:rgba(255,255,255,.65);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.6);border-radius:20px;padding:32px 28px;margin-bottom:32px;box-shadow:0 8px 24px rgba(28,37,48,.06)}
+.info-section h2{font-size:20px;color:var(--blue-dark);margin-bottom:16px}
+.info-section p{color:var(--muted);font-size:14px;margin-bottom:12px}
+.info-list{list-style:none;margin-top:16px}
+.info-list li{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(227,234,243,.6);font-size:14px;color:var(--ink)}
+.info-list li:last-child{border-bottom:none}
+.info-list li svg{width:20px;height:20px;color:var(--green);flex:none;margin-top:2px}
+
+/* Stats Row */
+.stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px}
+@media(min-width:640px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+.stat-card{background:rgba(255,255,255,.6);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.5);border-radius:14px;padding:20px 16px;text-align:center}
+.stat-card b{display:block;font-size:28px;color:var(--blue-dark);margin-bottom:4px}
+.stat-card span{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+
+/* Footer */
+.landing-footer{text-align:center;padding:32px 20px;color:var(--muted);font-size:13px;border-top:1px solid rgba(227,234,243,.6);margin-top:40px}
+.landing-footer a{color:var(--blue);text-decoration:none}
+.landing-footer a:hover{text-decoration:underline}
+
+/* Mobile */
+@media(max-width:640px){
+  .hero{padding:36px 22px}
+  .hero h1{font-size:24px}
+  .hero p{font-size:14px}
+  .cta-group{flex-direction:column}
+  .btn-primary,.btn-secondary{width:100%}
+  .info-section{padding:24px 20px}
+}
+</style>
+</head>
+<body>
+
+<header class="fb-header">
+  <div class="fb-brand">
+    <img src="tantrade-logo.png" alt="TANTRADE" class="fb-logo">
+    <div>
+      <b>TANTRADE</b>
+      <span>Customer Service Feedback</span>
+    </div>
+  </div>
+  <div class="lang-toggle">
+    <button class="active" onclick="setLang('en')">EN</button>
+    <button onclick="setLang('sw')">SW</button>
+  </div>
+</header>
+
+<main class="landing-main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <span>Official Survey Portal</span>
+    </div>
+    <h1 data-i18n="heroTitle">Help Us Serve You Better</h1>
+    <p data-i18n="heroSub">Share your experience with TANTRADE services. Your feedback drives our commitment to excellence in promoting Tanzanian trade and business development.</p>
+    <div class="cta-group">
+      <button class="btn-primary" onclick="startSurvey()">
+        <span data-i18n="startBtn">Start Survey Now</span>
+        <svg style="display:inline;vertical-align:middle;margin-left:8px;width:18px;height:18px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button class="btn-secondary" onclick="learnMore()" data-i18n="learnBtn">Learn More</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <b>2min</b>
+      <span>Completion Time</span>
+    </div>
+    <div class="stat-card">
+      <b>100%</b>
+      <span>Confidential</span>
+    </div>
+    <div class="stat-card">
+      <b>24/7</b>
+      <span>Available</span>
+    </div>
+    <div class="stat-card">
+      <b>EN/SW</b>
+      <span>Languages</span>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3 data-i18n="feat1Title">Quick & Easy</h3>
+      <p data-i18n="feat1Desc">Complete in just 2 minutes with simple, straightforward questions.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </div>
+      <h3 data-i18n="feat2Title">Secure & Private</h3>
+      <p data-i18n="feat2Desc">Your responses are confidential and protected.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+      </div>
+      <h3 data-i18n="feat3Title">Make an Impact</h3>
+      <p data-i18n="feat3Desc">Your feedback directly shapes better services for all Tanzanians.</p>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="info-section">
+    <h2 data-i18n="aboutTitle">Why Your Feedback Matters</h2>
+    <p data-i18n="aboutP1">TANTRADE (Tanzania Trade Development Authority) is committed to promoting and facilitating business development across Tanzania and international markets.</p>
+    <p data-i18n="aboutP2">By sharing your experience, you help us:</p>
+    <ul class="info-list">
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="about1">Improve our trade facilitation services</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="about2">Enhance support for local businesses</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="about3">Strengthen "Made in Tanzania" initiatives</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        <span data-i18n="about4">Deliver better customer experiences</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="hero" style="padding:36px 28px;margin-bottom:0">
+    <h2 style="font-size:24px;color:var(--blue-dark);margin-bottom:12px" data-i18n="finalTitle">Ready to Share Your Experience?</h2>
+    <p style="color:var(--muted);margin-bottom:24px" data-i18n="finalSub">Join thousands of Tanzanians who have helped shape better services.</p>
+    <button class="btn-primary" onclick="startSurvey()" style="min-width:240px" data-i18n="finalBtn">Begin Survey</button>
+  </section>
+
+</main>
+
+<footer class="landing-footer">
+  <p>&copy; 2026 TANTRADE - Tanzania Trade Development Authority</p>
+  <p style="margin-top:8px"><a href="mailto:feedback@tantrade.go.tz">feedback@tantrade.go.tz</a></p>
+</footer>
+
+<script>
+// Language toggle
+function setLang(lang) {
+  document.querySelectorAll('.lang-toggle button').forEach(btn => btn.classList.remove('active'));
+  document.getElementById(lang === 'en' ? 'langEn' : 'langSw')?.classList.add('active') || 
+    event.target.classList.add('active');
+  
+  const translations = {
+    en: {
+      heroTitle: "Help Us Serve You Better",
+      heroSub: "Share your experience with TANTRADE services. Your feedback drives our commitment to excellence.",
+      startBtn: "Start Survey Now",
+      learnBtn: "Learn More",
+      feat1Title: "Quick & Easy",
+      feat1Desc: "Complete in just 2 minutes with simple, straightforward questions.",
+      feat2Title: "Secure & Private",
+      feat2Desc: "Your responses are confidential and protected.",
+      feat3Title: "Make an Impact",
+      feat3Desc: "Your feedback directly shapes better services for all Tanzanians.",
+      aboutTitle: "Why Your Feedback Matters",
+      aboutP1: "TANTRADE is committed to promoting and facilitating business development across Tanzania.",
+      aboutP2: "By sharing your experience, you help us:",
+      about1: "Improve our trade facilitation services",
+      about2: "Enhance support for local businesses",
+      about3: "Strengthen 'Made in Tanzania' initiatives",
+      about4: "Deliver better customer experiences",
+      finalTitle: "Ready to Share Your Experience?",
+      finalSub: "Join thousands of Tanzanians who have helped shape better services.",
+      finalBtn: "Begin Survey"
+    },
+    sw: {
+      heroTitle: "Tusaidie Kukuhudumia Vyema",
+      heroSub: "Shiriki uzoefu wako na huduma za TANTRADE. Maoni yako yanatuwezesha kuboresha huduma.",
+      startBtn: "Anza Utafiti Sasa",
+      learnBtn: "Jifunze Zaidi",
+      feat1Title: "Haraka na Rahisi",
+      feat1Desc: "Kamilisha kwa dakika 2 tu kwa maswali rahisi.",
+      feat2Title: "Salama na Faragha",
+      feat2Desc: "Majibu yako ni ya siri na yamelindwa.",
+      feat3Title: "Fanya Tofauti",
+      feat3Desc: "Maoni yako yanaunda huduma bora kwa Watanzania wote.",
+      aboutTitle: "Kwa Nini Maoni Yako Yanafaa",
+      aboutP1: "TANTRADE imejizatiti kukuza na kurahisisha maendeleo ya biashara Tanzania.",
+      aboutP2: "Kwa kushiriki uzoefu wako, unatusaidia:",
+      about1: "Kuboresha huduma zetu za urahisishaji biashara",
+      about2: "Kuongeza msaada kwa biashara za ndani",
+      about3: "Kuidhamini mipango ya 'Made in Tanzania'",
+      about4: "Kutoa uzoefu bora kwa wateja",
+      finalTitle: "Uko Tayari Kushiriki Uzoefu Wako?",
+      finalSub: "Jiunge na maelfu ya Watanzania waliosaidia kuunda huduma bora.",
+      finalBtn: "Anza Utafiti"
+    }
+  };
+  
+  const t = translations[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.placeholder = t[key];
+      } else {
+        el.textContent = t[key];
+      }
+    }
+  });
+}
+
+// Navigation functions
+function startSurvey() {
+  window.location.href = 'feedback.html';
+}
+
+function learnMore() {
+  // Scroll to about section
+  document.querySelector('.info-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  // Add smooth scroll behavior
+  document.documentElement.style.scrollBehavior = 'smooth';
+});
+</script>
+
+</body>
+</html>
