@@ -686,3 +686,205 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   background: transparent !important;
   content: none !important;
 }
+
+/* =====================================================
+    MOBILE RESPONSIVENESS FOR ADMIN PAGE
+   ===================================================== */
+@media (max-width: 640px) {
+  /* 1. Prevent ANY horizontal scrolling globally */
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+  }
+
+  /* 2. Header: Shrink logo and text to fit narrow screens */
+  .admin-page .fb-header {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+  .admin-page .fb-logo {
+    width: 40px !important;
+    height: 32px !important;
+  }
+  .admin-page .fb-brand b {
+    font-size: 14px !important;
+  }
+  .admin-page .fb-brand span {
+    font-size: 10px !important;
+    display: none !important; /* Hide subtitle on very small screens to save space */
+  }
+
+  /* 3. Main wrapper: Reduce padding */
+  .admin-page .adm-wrap {
+    padding: 12px 10px 40px !important;
+  }
+
+  /* 4. Top Bar & Action Buttons: 2x2 Grid, allow text wrapping */
+  .admin-page .adm-top {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    margin-bottom: 16px !important;
+  }
+  .admin-page .adm-top h1 {
+    font-size: 18px !important;
+    text-align: center !important;
+    padding-bottom: 0 !important;
+  }
+  .admin-page .adm-top h1::after {
+    display: none !important; /* Remove underline on mobile to save space */
+  }
+  .admin-page .adm-actions {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important; /* 2 columns */
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .admin-page .adm-actions button {
+    font-size: 11px !important;
+    padding: 10px 6px !important;
+    white-space: normal !important; /* Allow text to wrap if needed */
+    line-height: 1.3 !important;
+    min-width: 0 !important;
+  }
+
+  /* 5. Filter Bar: Stack vertically */
+  .admin-page .adm-filters {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+  }
+  .admin-page .adm-filters select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .admin-page .adm-filters #filterCount {
+    text-align: center !important;
+    margin-left: 0 !important;
+  }
+
+  /* 6. KPI Cards: 2x2 Grid, compact */
+  .admin-page .kpi-row {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .admin-page .kpi {
+    padding: 12px 8px !important;
+  }
+  .admin-page .kpi b {
+    font-size: 18px !important;
+  }
+  .admin-page .kpi span {
+    font-size: 9px !important;
+  }
+  .admin-page .kpi-ico {
+    width: 30px !important;
+    height: 30px !important;
+    margin-bottom: 6px !important;
+  }
+  .admin-page .kpi-ico svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* 7. Charts: Single column, fixed height */
+  .admin-page .chart-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  .admin-page .chart-card {
+    padding: 12px 10px !important;
+  }
+  .admin-page .chart-card h3 {
+    font-size: 12px !important;
+    margin-bottom: 8px !important;
+  }
+  .chart-body, .chart-body.tall {
+    height: 200px !important;
+  }
+
+  /* 8. Dashboard Cards (2x2 grid becomes 1 column) */
+  .dash-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 0 !important;
+  }
+  .dashboard-card {
+    padding: 16px 12px !important;
+    min-height: auto !important;
+  }
+  .dc-head {
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+  }
+  .dc-badge {
+    width: 36px !important;
+    height: 36px !important;
+  }
+  .dc-badge svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .dc-titles h3 {
+    font-size: 15px !important;
+  }
+  .dc-titles p {
+    font-size: 11px !important;
+  }
+  
+  /* Donut & Spark adjustments */
+  .donut-wrap {
+    width: min(180px, 60%) !important;
+  }
+  .donut-hole b {
+    font-size: 22px !important;
+  }
+  .donut-hole span {
+    font-size: 11px !important;
+  }
+  .spark {
+    min-height: 150px !important;
+  }
+  
+  /* Horizontal Bars */
+  .hbar-label {
+    font-size: 11px !important;
+    width: 30% !important;
+  }
+  .hbar-val {
+    font-size: 11px !important;
+  }
+  .hbar-track {
+    height: 8px !important;
+  }
+
+  /* 9. Tables & Comments: Force horizontal scroll instead of squishing */
+  .admin-page .tbl-wrap {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .admin-page .fb-tbl {
+    font-size: 11px !important;
+    min-width: 500px !important; /* Forces horizontal scroll, keeps data readable */
+  }
+  .admin-page .fb-tbl th, 
+  .admin-page .fb-tbl td {
+    padding: 8px 6px !important;
+    white-space: nowrap !important;
+  }
+  .admin-page .cmt {
+    font-size: 12px !important;
+    padding: 10px !important;
+  }
+}
+
+/* Extra small phones (e.g., iPhone SE, Galaxy Fold cover) */
+@media (max-width: 380px) {
+  .admin-page .adm-actions {
+    grid-template-columns: 1fr !important; /* Stack buttons in 1 column on tiny screens */
+  }
+  .admin-page .fb-brand span {
+    display: none !important;
+  }
+}
