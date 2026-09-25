@@ -383,6 +383,50 @@ function exportCSV(){
   a.click();
 }
 
+// ===== NUCLEAR RESET FUNCTION =====
+async function resetAllData() {
+  // 1st Confirmation: Standard browser alert
+  if (!confirm('WARNING: This will permanently DELETE ALL survey responses from the database.\n\nThis action CANNOT be undone.\n\nClick OK to proceed to the final confirmation.')) {
+    return;
+  }
+  
+  // 2nd Confirmation: Requires typing a specific word
+  const confirmation = prompt('For safety, type DELETE in all caps to confirm data deletion:');
+  if (confirmation !== 'DELETE') {
+    alert('Deletion cancelled. No data was harmed.');
+    return;
+  }
+
+  // Show loading state on the button
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = 'Deleting...';
+  btn.disabled = true;
+
+  try {
+    // Delete all rows where 'created_at' is not null (effectively deletes everything)
+    const { data, error } = await sb
+      .from('survey_responses')
+      .delete()
+      .not('created_at', 'is', null);
+    
+    if (error) {
+      throw error;
+    }
+
+    alert('Success! All dummy/survey data has been permanently deleted.');
+    loadAll(); // Refresh the dashboard to show the empty state
+    
+  } catch (err) {
+    console.error('Delete error:', err);
+    alert('Failed to delete data: ' + (err.message || 'Unknown error. Check console for details.'));
+  } finally {
+    // Restore button state
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }
+}
+
 // ===== AUTOMATED ANALYSIS ENGINE =====
 function analyzeSurveyData(){
   var total = rows.length;
