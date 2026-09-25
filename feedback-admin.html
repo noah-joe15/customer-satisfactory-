@@ -36,9 +36,25 @@
 .admin-page .hbar-track{background:rgba(28,37,48,.08) !important}
 .admin-page .cmt{background:rgba(255,255,255,.75) !important;border:1px solid rgba(28,37,48,.10) !important;color:#1c2530 !important}
 .admin-page .cmt small{color:#5c6b7a !important}
+
+/* NEW: Danger Button Styling for Reset */
+.admin-page .btn-danger {
+  background: linear-gradient(135deg, #991b1b, #dc2626) !important;
+  color: #fff !important;
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.35) !important;
+  transition: all 0.25s ease !important;
+}
+.admin-page .btn-danger:hover {
+  background: linear-gradient(135deg, #7f1d1d, #b91c1c) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.45) !important;
+}
+.admin-page .btn-danger:disabled {
+  opacity: 0.6 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+}
 </style>
-</head>
-<body class="admin-page">
 
 <header class="fb-header">
   <div class="fb-brand">
