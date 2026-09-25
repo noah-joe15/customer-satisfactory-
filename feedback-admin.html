@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="feedback.css?v=16">
 
-<!-- NUCLEAR FALLBACK: Ivory theme inline so it works even if CSS doesn't load -->
+<!-- NUCLEAR FALLBACK: Ivory theme inline -->
 <style id="ivory-nuclear">
-.admin-page{--txt-1:#1c2530 !important;--txt-2:#5c6b7a !important;--txt-3:#7a8698 !important;--card-bg:rgba(255,255,255,.78) !important;--card-border:rgba(28,37,48,.10) !important;background:radial-gradient(900px 480px at 90% -10%, rgba(0,87,168,.07), transparent 60%),radial-gradient(800px 420px at -10% 30%, rgba(0,133,74,.06), transparent 55%),linear-gradient(180deg,#faf7ef,#f3eee1) !important}
+.admin-page{--txt-1:#1c2530 !important;--txt-2:#5c6b7a !important;--txt-3:#7a8698 !important;--card-bg:rgba(255,255,255,.78) !important;--card-border:rgba(28,37,48,.10) !important;background:linear-gradient(180deg,#faf7ef,#f3eee1) !important}
 .admin-page .glass{background:rgba(255,255,255,.78) !important;border:1px solid rgba(28,37,48,.10) !important;box-shadow:0 8px 24px rgba(28,37,48,.08), inset 0 1px 0 rgba(255,255,255,.65) !important}
 .admin-page .adm-top h1{color:#101826 !important}
 .admin-page .chart-card h3{color:#101826 !important}
@@ -56,6 +56,54 @@
 }
 </style>
 
+<!-- FINAL OVERRIDE: Forces Ivory Theme and KILLS dark blue blobs from external CSS -->
+<style>
+/* 1. Force Ivory Background */
+body.admin-page, .admin-page {
+  background: linear-gradient(180deg, #faf7ef, #f3eee1) !important;
+  --txt-1: #1c2530 !important;
+  --txt-2: #5c6b7a !important;
+  --txt-3: #7a8698 !important;
+  --card-bg: rgba(255, 255, 255, 0.85) !important;
+  --card-border: rgba(28, 37, 48, 0.10) !important;
+}
+
+/* 2. KILL THE DARK BLUE BLOBS from feedback.css */
+.admin-page::before,
+.admin-page::after {
+  display: none !important;
+  background: transparent !important;
+}
+
+/* 3. Force Light Cards */
+.admin-page .glass,
+.admin-page .dashboard-card,
+.admin-page .chart-card,
+.admin-page .fb-card,
+.admin-page .kpi {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #1c2530 !important;
+  border: 1px solid rgba(28, 37, 48, 0.10) !important;
+}
+
+/* 4. Force Dark Text */
+.admin-page h1, .admin-page h2, .admin-page h3, .admin-page b, 
+.admin-page .dc-titles h3, .admin-page .dc-titles p, .admin-page .adm-top h1 {
+  color: #101826 !important;
+}
+
+/* 5. Force Light Header */
+.admin-page .fb-header {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 1px solid rgba(28, 37, 48, 0.1) !important;
+}
+.admin-page .fb-brand b { color: #003c71 !important; }
+.admin-page .fb-brand span { color: #5c6b7a !important; }
+</style>
+</head>
+
+<body class="admin-page">
+
 <header class="fb-header">
   <div class="fb-brand">
     <div class="fb-logo"><img src="tantrade-logo.png" alt="TANTRADE"></div>
@@ -64,7 +112,7 @@
       <span>Feedback Analytics</span>
     </div>
   </div>
-  <a class="lang-toggle" href="feedback.html" style="text-decoration:none;color:#cfe3f5;padding:6px 14px;font-weight:700;font-size:12px">View Form</a>
+  <a class="lang-toggle" href="feedback.html" style="text-decoration:none;color:#003c71;padding:6px 14px;font-weight:700;font-size:12px;background:rgba(0,60,113,0.08);border-radius:999px">View Form</a>
 </header>
 
 <main class="adm-wrap">
@@ -94,7 +142,7 @@
       <select id="filterRegion" onchange="applyFilter()" style="flex:1;max-width:260px;padding:8px 14px;border-radius:10px;border:1px solid rgba(28,37,48,.15);background:#fff;font-size:13px;font-weight:600;color:#1c2530;cursor:pointer;outline:none;box-shadow:0 2px 8px rgba(28,37,48,.04)">
         <option value="">All Regions</option>
       </select>
-      <span id="filterCount" style="font-size:12px;color:var(--txt-3);margin-left:auto;font-weight:600"></span when="true"></span>
+      <span id="filterCount" style="font-size:12px;color:var(--txt-3);margin-left:auto;font-weight:600"></span>
     </div>
 
     <div class="kpi-row" id="kpiRow"></div>
