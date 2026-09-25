@@ -12,11 +12,11 @@
 body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#faf7ef,#f3eee1);min-height:100vh;color:var(--ink);line-height:1.6}
 
 /* Header */
-.fb-header{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.6)}
-.fb-brand{display:flex;gap:10px;align-items:center}
-.fb-logo{width:46px;height:36px;object-fit:contain;background:#fff;border-radius:8px;padding:3px}
-.fb-brand b{color:var(--blue-dark);display:block;font-size:15px;letter-spacing:1px}
-.fb-brand span{color:var(--muted);font-size:11px}
+.fb-header{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 24px;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:2px solid rgba(0,87,168,.15)}
+.fb-brand{display:flex;gap:16px;align-items:center}
+.fb-logo{width:120px;height:80px;object-fit:contain;background:#fff;border-radius:12px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .25s}
+.fb-logo:hover{transform:scale(1.05)}
+.fb-brand span{color:var(--muted);font-size:13px;font-weight:600}
 .lang-toggle{display:flex;background:rgba(0,60,113,.08);border-radius:999px;padding:3px}
 .lang-toggle button{border:none;background:transparent;color:var(--muted);font-weight:700;font-size:12px;padding:6px 14px;border-radius:999px;cursor:pointer;transition:.2s}
 .lang-toggle button.active{background:var(--green);color:#fff}
@@ -71,6 +71,7 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#faf7ef,#f
 
 /* Mobile */
 @media(max-width:640px){
+  .fb-logo{width:90px;height:60px;padding:6px}
   .hero{padding:36px 22px}
   .hero h1{font-size:24px}
   .hero p{font-size:14px}
@@ -84,11 +85,8 @@ body{font-family:'Inter',sans-serif;background:linear-gradient(180deg,#faf7ef,#f
 
 <header class="fb-header">
   <div class="fb-brand">
-    <img src="tantrade-logo.png" alt="TANTRADE" class="fb-logo">
-    <div>
-      <b>TANTRADE</b>
-      <span>Customer Service Feedback</span>
-    </div>
+    <img src="tantrade-logo.png" alt="TANTRADE - Tanzania Trade Development Authority" class="fb-logo">
+    <span>Customer Service Feedback</span>
   </div>
   <div class="lang-toggle">
     <button id="langEn" class="active" onclick="setLang('en')">EN</button>
