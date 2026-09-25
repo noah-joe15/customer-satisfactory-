@@ -888,3 +888,12 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
     display: none !important;
   }
 }
+
+/* Prevent double-tap zoom on interactive elements */
+.admin-page button, 
+.admin-page a, 
+.admin-page input, 
+.admin-page select {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
