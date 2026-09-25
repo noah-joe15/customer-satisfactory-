@@ -676,3 +676,13 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   box-shadow: 0 0 0 4px rgba(0, 87, 168, 0.08) !important;
   outline: none !important;
 }
+
+/* =====================================================
+   CRITICAL FIX: DISABLE DARK BLOBS FOR ADMIN PAGE
+   ===================================================== */
+.admin-page::before,
+.admin-page::after {
+  display: none !important;
+  background: transparent !important;
+  content: none !important;
+}
