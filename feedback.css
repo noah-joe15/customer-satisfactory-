@@ -898,10 +898,11 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   -webkit-tap-highlight-color: transparent !important;
 }
 
+/* HERO BACKGROUND IMAGE */
 .hero {
   position: relative !important;
   overflow: hidden !important;
-  background: linear-gradient(180deg, #faf7ef, #f3eee1) !important;
+  /* Remove the gradient background - let ::before handle it */
 }
 
 .hero::before {
@@ -911,11 +912,12 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  background-image: url('./plant-bg.jpg') !important;
+  background: linear-gradient(180deg, #faf7ef, #f3eee1) !important;
+  background-image: url('plant-bg.jpg') !important;
   background-size: cover !important;
   background-position: left center !important;
   background-repeat: no-repeat !important;
-  opacity: 0.15 !important;
+  opacity: 0.2 !important;
   z-index: 0 !important;
   pointer-events: none !important;
 }
