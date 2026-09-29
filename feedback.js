@@ -8,7 +8,6 @@ window.__ans = {};
 
 const REGIONS = ['Arusha','Dar es Salaam','Dodoma','Geita','Iringa','Kagera','Katavi','Kigoma','Kilimanjaro','Lindi','Manyara','Mara','Mbeya','Morogoro','Mtwara','Mwanza','Njombe','Pemba Kaskazini','Pemba Kusini','Pwani','Rukwa','Ruvuma','Shinyanga','Simiyu','Singida','Songwe','Tabora','Tanga','Unguja Kaskazini','Unguja Kusini','Mjini Magharibi'];
 
-// Complete mapping of Tanzanian Regions to their Districts
 const DISTRICTS = {
   "Arusha": ["Arusha City", "Arusha", "Karatu", "Longido", "Monduli", "Meru", "Ngorongoro"],
   "Dar es Salaam": ["Ilala", "Kinondoni", "Temeke", "Ubungo", "Kigamboni"],
@@ -43,11 +42,14 @@ const DISTRICTS = {
   "Mjini Magharibi": ["Mjini", "Magharibi"]
 };
 
+// UPDATED: 6 Sections mapping to 12 questions
 const SECTIONS = [
   {id:1, qs:['q1','q2','q3']},
   {id:2, qs:['q4','q5','q6']},
-  {id:3, qs:['q7','q8']},
-  {id:4, qs:['q9','q10']}
+  {id:3, qs:['q7','q8','q9']},
+  {id:4, qs:['q10']},
+  {id:5, qs:['q11']},
+  {id:6, qs:['q12']}
 ];
 
 const T = {
@@ -68,28 +70,34 @@ const T = {
     errPersonal:'Please fill in name, phone, email, gender and region.',
     errEmail:'Please enter a valid email address.',
     sec1:'Section 1: General Experience',
-    sec2:'Section 2: Communication & Support',
-    sec3:'Section 3: Service Quality',
-    sec4:'Section 4: Overall Impression',
-    q1:'How satisfied are you with the overall services provided by TanTrade?',
+    sec2:'Section 2: Trade and Market Information',
+    sec3:'Section 3: Trade Facilitation and Market Linkages',
+    sec4:'Section 4: Trade Promotion Events',
+    sec5:'Section 5: Capacity Building Platforms',
+    sec6:'Section 6: Customer Feedback',
+    q1:'How satisfied are you with the overall quality of services you received from TanTrade?',
     q1o:['Very satisfied','Satisfied','Neutral','Dissatisfied','Very dissatisfied'],
-    q2:'How would you rate the professionalism and courtesy of TanTrade staff?',
+    q2:'How would you rate the professionalism, responsiveness and courtesy of TanTrade staff when serving you?',
     q2o:['Excellent','Good','Fair','Poor'],
-    q3:'How timely was the assistance you received from TanTrade?',
-    q3o:['Very timely','Timely','Average','Delayed','Very delayed'],
-    q4:'Was the information provided by TanTrade clear and easy to understand?',
-    q4o:['Yes, very clear','Somewhat clear','Neutral','Not clear'],
-    q5:'How satisfied are you with the responsiveness of TanTrade staff to your inquiries?',
-    q5o:['Very satisfied','Satisfied','Neutral','Dissatisfied'],
-    q6:'Did you feel your concerns and needs were listened to and addressed appropriately?',
-    q6o:['Strongly agree','Agree','Neutral','Disagree','Strongly disagree'],
-    q7:'How would you rate the quality of TanTrade services (e.g., trade facilitation, market linkages, business support)?',
-    q7o:['Excellent','Good','Fair','Poor'],
-    q8:'Did TanTrade services meet your expectations?',
-    q8o:['Exceeded expectations','Met expectations','Neutral','Did not meet expectations'],
-    q9:'Would you recommend TanTrade services to other businesses or stakeholders?',
-    q9o:['Definitely yes','Probably yes','Not sure','Probably not','Definitely not'],
-    q10:'What improvements would you suggest for TanTrade customer service and trade facilitation programs?'
+    q3:'How satisfied are you with the time taken by TanTrade to provide the service or respond to your request?',
+    q3o:['Very satisfied','Satisfied','Neutral','Dissatisfied','Very dissatisfied'],
+    q4:'How satisfied are you with the availability of trade and market information provided by TanTrade?',
+    q4o:['Very satisfied','Satisfied','Neutral','Dissatisfied','Very dissatisfied'],
+    q5:'To what extent was the trade or market information provided by TanTrade useful to your business activities?',
+    q5o:['Very useful','Useful','Average','Not useful'],
+    q6:'How clear and easy to understand was the trade and market information provided by TanTrade?',
+    q6o:['Very clear','Clear','Average','Unclear','Very unclear'],
+    q7:'How satisfied are you with TanTrade’s services in connecting you with market opportunities, buyers or business?',
+    q7o:['Very satisfied','Satisfied','Average','Dissatisfied'],
+    q8:'How satisfied are you with the support provided by TanTrade in facilitating your business activities?',
+    q8o:['Very satisfied','Satisfied','Average','Dissatisfied','Very dissatisfied'],
+    q9:'How easy was it to access and obtain the TanTrade services you needed?',
+    q9o:['Very Easy','Easy','Average','Difficult'],
+    q10:'How satisfied are you with information shared regarding trade events (Exhibition, trade missions, B2B and forums) coordinated by TanTrade?',
+    q10o:['Very satisfied','Satisfied','Average','Dissatisfied','Very dissatisfied'],
+    q11:'How satisfied are you with the information and service offered in capacity building programs (trainings, business clinics, export readiness)?',
+    q11o:['Very satisfied','Satisfied','Average','Dissatisfied','Very dissatisfied'],
+    q12:'What improvements would you recommend to help TanTrade further enhance its services for promoting and facilitating trade?'
   },
   sw: {
     brandSub:'Kuridhika kwa Huduma kwa Wateja',
@@ -108,28 +116,34 @@ const T = {
     errPersonal:'Tafadhali jaza jina, simu, barua pepe, jinsia na mkoa.',
     errEmail:'Tafadhali weka barua pepe sahihi.',
     sec1:'Sehemu ya 1: Uzoefu wa Jumla',
-    sec2:'Sehemu ya 2: Mawasiliano na Msaada',
-    sec3:'Sehemu ya 3: Ubora wa Huduma',
-    sec4:'Sehemu ya 4: Mtazamo wa Jumla',
-    q1:'Je, umelidhika kwa kiwango gani na huduma ulizopokea kutoka TanTrade?',
-    q1o:['Nimeridhika sana','Nimeridhika','Kawaida','Sijaridhika','Sijaridhika kabisa'],
-    q2:'Ungezipima vipi taaluma na heshima ya watumishi wa TanTrade?',
-    q2o:['Bora sana','Nzuri','Wastani','Duni'],
-    q3:'Je, huduma ulizopokea zilikuwa kwa wakati unaofaa?',
+    sec2:'Sehemu ya 2: Taarifa za Biashara na Masoko',
+    sec3:'Sehemu ya 3: Urahisishaji wa Biashara na Viungo vya Masoko',
+    sec4:'Sehemu ya 4: Matukio ya Kukuza Biashara',
+    sec5:'Sehemu ya 5: Jukwaa la Kujenga Uwezo',
+    sec6:'Sehemu ya 6: Maoni ya Wateja',
+    q1:'Unaridhika kwa kiwango gani na ubora wa huduma ulizopokea kutoka TanTrade?',
+    q1o:['Nimeridhika sana','Nimeridhika','Sina maoni maalum','Sijaridhika','Sijaridhika kabisa'],
+    q2:'Unaweza kuupima vipi weledi, mwitikio na heshima ya watumishi wa TanTrade wakati wakikuhudumia?',
+    q2o:['Bora sana','Bora','Wastani','Hafifu','Hafifu sana'],
+    q3:'Umeridhika kwa kiwango gani na muda uliotumika na TanTrade kukupa huduma au kujibu ombi lako?',
     q3o:['Kwa wakati kabisa','Kwa wakati','Wastani','Zimechelewa','Zimechelewa sana'],
-    q4:'Je, taarifa ulizopewa na TanTrade zilikuwa wazi na rahisi kueleweka?',
-    q4o:['Ndiyo, wazi kabisa','Zilikuwa kiasi','Kawaida','Hazikuwa wazi'],
-    q5:'Je, umelidhika na mwitikio wa watumishi wa TanTrade kwa maswali yako?',
-    q5o:['Nimeridhika sana','Nimeridhika','Kawaida','Sijaridhika'],
-    q6:'Je, ulijisikia mahitaji yako yamesikilizwa na kushughulikiwa ipasavyo?',
-    q6o:['Nakubaliana kabisa','Nakubaliana','Kawaida','Sikubaliani','Sikubaliani kabisa'],
-    q7:'Ungezipima vipi huduma za TanTrade (mfano: urahisishaji wa biashara, kuunganisha masoko, msaada kwa wafanyabiashara)?',
-    q7o:['Bora sana','Nzuri','Wastani','Duni'],
-    q8:'Je, huduma za TanTrade zilikidhi matarajio yako?',
-    q8o:['Zimezidi matarajio','Zimekidhi matarajio','Kawaida','Hazijakidhi matarajio'],
-    q9:'Je, utapendekeza huduma za TanTrade kwa wafanyabiashara au wadau wengine?',
-    q9o:['Ndiyo, kwa hakika','Huenda ndiyo','Sina uhakika','Huenda hapana','Hapana kabisa'],
-    q10:'Ni maboresho gani ungependa TanTrade yafanye katika huduma kwa wateja na programu zake za urahisishaji biashara?'
+    q4:'Unaridhika kwa kiwango gani na upatikanaji wa taarifa za biashara na masoko zinazotolewa na TanTrade?',
+    q4o:['Nimeridhika sana','Nimeridhika','Sina maoni maalum','Sijaridhika','Sijaridhika kabisa'],
+    q5:'Taarifa za biashara au masoko ulizopewa na TanTrade zilikusaidia kwa kiwango gani katika shughuli zako za kibiashara?',
+    q5o:['Zilisaidia sana','Zilisaidia','Wastani','Hazikusaidia'],
+    q6:'Taarifa za biashara na masoko ulizopewa na TanTrade zilikuwa wazi na rahisi kueleweka kwa kiwango gani?',
+    q6o:['Wazi sana','Wazi','Wastani','Sio wazi','Sio wazi kabisa'],
+    q7:'Unaridhika kwa kiwango gani na huduma za TanTrade za kukuunganisha na fursa za masoko, wanunuzi au biashara?',
+    q7o:['Nimeridhika sana','Nimeridhika','Wastani','Sijaridhika'],
+    q8:'Unaridhika kwa kiwango gani na msaada uliotolewa na TanTrade katika kurahisisha shughuli zako za kibiashara?',
+    q8o:['Nimeridhika sana','Nimeridhika','Wastani','Sijaridhika','Sijaridhika kabisa'],
+    q9:'Ilikuwa rahisi kwa kiwango gani kupata huduma ulizohitaji kutoka TanTrade?',
+    q9o:['Rahisi sana','Rahisi','Wastani','Ngumu'],
+    q10:'Je, unaridhika kwa kiasi gani na taarifa zilizotolewa kuhusu matukio ya kibiashara (Maonyesho, misafara ya kibiashara, mikutano ya B2B na kongamano) yaliyoratibiwa na TanTrade?',
+    q10o:['Nimeridhika sana','Nimeridhika','Wastani','Sijaridhika','Sijaridhika kabisa'],
+    q11:'Je, unaridhika kwa kiasi gani na taarifa pamoja na huduma zinazotolewa katika programu za kujenga uwezo (mafunzo, kliniki za kibiashara, na utayari wa kusafirisha bidhaa nje ya nchi)?',
+    q11o:['Nimeridhika sana','Nimeridhika','Wastani','Sijaridhika','Sijaridhika kabisa'],
+    q12:'Ni maboresho gani unapendekeza ili kuboresha huduma kwa wateja na huduma za uwezeshaji biashara zinazotolewa na TanTrade?'
   }
 };
 
@@ -151,14 +165,10 @@ function applyI18n(){
   document.getElementById('langSw').classList.toggle('active', lang==='sw');
 }
 
-// NEW: Dynamically populate districts based on selected region
 function updateDistricts() {
   var region = document.getElementById('fRegion').value;
   var districtSelect = document.getElementById('fDistrict');
-  
-  // Clear existing options
   districtSelect.innerHTML = '<option value="">--</option>';
-  
   if (region && DISTRICTS[region]) {
     DISTRICTS[region].forEach(function(d) {
       var o = document.createElement('option');
@@ -169,15 +179,17 @@ function updateDistricts() {
   }
 }
 
+// UPDATED: Loop now goes up to 12
 function capture(){
-  for(var i=1;i<=9;i++){
+  for(var i=1;i<=12;i++){
     var c=document.querySelector('input[name="q'+i+'"]:checked');
     if(c) window.__ans['q'+i] = +c.value;
   }
-  var ta=document.getElementById('q10ta');
-  if(ta) window.__ans.q10 = ta.value;
+  var ta=document.getElementById('q12ta');
+  if(ta) window.__ans.q12 = ta.value;
 }
 
+// UPDATED: Renders q12 as textarea
 function renderQuestions(){
   var wrap=document.getElementById('qWrap');
   var html='';
@@ -185,8 +197,8 @@ function renderQuestions(){
     html+='<h2 class="q-sec">'+t('sec'+s.id)+'</h2>';
     s.qs.forEach(function(q){
       html+='<div class="q-block"><p class="q-text">'+t(q)+'</p>';
-      if(q==='q10'){
-        html+='<textarea id="q10ta" class="fb-ta" placeholder="...">'+(window.__ans.q10||'')+'</textarea>';
+      if(q==='q12'){
+        html+='<textarea id="q12ta" class="fb-ta" placeholder="...">'+(window.__ans.q12||'')+'</textarea>';
       }else{
         html+='<div class="q-opts">';
         T[lang][q+'o'].forEach(function(opt,i){
@@ -221,6 +233,7 @@ function backToPersonal(){
   document.getElementById('stepPersonal').classList.remove('hidden');
 }
 
+// UPDATED: Payload now includes q10, q11, and q12
 async function submitSurvey(){
   capture();
   var payload={
@@ -239,7 +252,10 @@ async function submitSurvey(){
     q7:window.__ans.q7!=null?window.__ans.q7:null,
     q8:window.__ans.q8!=null?window.__ans.q8:null,
     q9:window.__ans.q9!=null?window.__ans.q9:null,
-    comment:window.__ans.q10||null,
+    q10:window.__ans.q10!=null?window.__ans.q10:null,
+    q11:window.__ans.q11!=null?window.__ans.q11:null,
+    q12:window.__ans.q12!=null?window.__ans.q12:null,
+    comment:window.__ans.q12||null, // Kept for backward compatibility
     lang:lang
   };
   var r=await sb.from('survey_responses').insert([payload]);
@@ -249,7 +265,6 @@ async function submitSurvey(){
   window.scrollTo(0,0);
 }
 
-// ===== INIT =====
 (function(){
   var reg = document.getElementById('fRegion');
   REGIONS.forEach(function(r){
@@ -258,9 +273,6 @@ async function submitSurvey(){
     o.textContent = r;
     reg.appendChild(o);
   });
-  
-  // Listen for region changes to update districts dynamically
   reg.addEventListener('change', updateDistricts);
-  
   applyI18n();
 })();
