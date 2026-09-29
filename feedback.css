@@ -897,3 +897,28 @@ html,body{max-width:100%;overflow-x:hidden;overflow-x:clip}
   touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent !important;
 }
+
+.hero {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.hero::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-image: url('plant-bg.jpg') !important;
+  background-size: cover !important;
+  background-position: left center !important;
+  opacity: 0.15 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+.hero > * {
+  position: relative !important;
+  z-index: 1 !important;
+}
