@@ -42,7 +42,6 @@ const DISTRICTS = {
   "Mjini Magharibi": ["Mjini", "Magharibi"]
 };
 
-// UPDATED: 6 Sections mapping to 12 questions
 const SECTIONS = [
   {id:1, qs:['q1','q2','q3']},
   {id:2, qs:['q4','q5','q6']},
@@ -149,12 +148,14 @@ const T = {
 
 function t(k){ return T[lang][k] || k; }
 
-function setLang(l){
-  capture();
-  lang = l;
-  localStorage.setItem('fb_lang', l);
-  applyI18n();
-  renderQuestions();
+// CLEANED: Single capture function handling all 12 questions
+function capture(){
+  for(var i = 1; i <= 12; i++){
+    var c = document.querySelector('input[name="q'+i+'"]:checked');
+    if(c) window.__ans['q'+i] = +c.value;
+  }
+  var ta = document.getElementById('q12ta');
+  if(ta) window.__ans.q12 = ta.value;
 }
 
 function applyI18n(){
@@ -179,47 +180,36 @@ function updateDistricts() {
   }
 }
 
-// UPDATED: Loop now goes up to 12
-function capture(){
-  for(var i=1;i<=12;i++){
-    var c=document.querySelector('input[name="q'+i+'"]:checked');
-    if(c) window.__ans['q'+i] = +c.value;
-  }
-  var ta=document.getElementById('q12ta');
-  if(ta) window.__ans.q12 = ta.value;
-}
-
-// UPDATED: Renders q12 as textarea
 function renderQuestions(){
-  var wrap=document.getElementById('qWrap');
-  var html='';
+  var wrap = document.getElementById('qWrap');
+  var html = '';
   SECTIONS.forEach(function(s){
-    html+='<h2 class="q-sec">'+t('sec'+s.id)+'</h2>';
+    html += '<h2 class="q-sec">'+t('sec'+s.id)+'</h2>';
     s.qs.forEach(function(q){
-      html+='<div class="q-block"><p class="q-text">'+t(q)+'</p>';
-      if(q==='q12'){
-        html+='<textarea id="q12ta" class="fb-ta" placeholder="...">'+(window.__ans.q12||'')+'</textarea>';
-      }else{
-        html+='<div class="q-opts">';
+      html += '<div class="q-block"><p class="q-text">'+t(q)+'</p>';
+      if(q === 'q12'){
+        html += '<textarea id="q12ta" class="fb-ta" placeholder="...">'+(window.__ans.q12||'')+'</textarea>';
+      } else {
+        html += '<div class="q-opts">';
         T[lang][q+'o'].forEach(function(opt,i){
-          var chk=(window.__ans[q]===i)?' checked':'';
-          html+='<label class="q-opt"><input type="radio" name="'+q+'" value="'+i+'"'+chk+'><span>'+opt+'</span></label>';
+          var chk = (window.__ans[q] === i) ? ' checked' : '';
+          html += '<label class="q-opt"><input type="radio" name="'+q+'" value="'+i+'"'+chk+'><span>'+opt+'</span></label>';
         });
-        html+='</div>';
+        html += '</div>';
       }
-      html+='</div>';
+      html += '</div>';
     });
   });
-  wrap.innerHTML=html;
+  wrap.innerHTML = html;
 }
 
 function goToQuestions(){
-  var name=document.getElementById('fName').value.trim();
-  var phone=document.getElementById('fPhone').value.trim();
-  var email=document.getElementById('fEmail').value.trim();
-  var gender=document.getElementById('fGender').value;
-  var region=document.getElementById('fRegion').value;
-  if(!name||!phone||!email||!gender||!region){ alert(t('errPersonal')); return; }
+  var name = document.getElementById('fName').value.trim();
+  var phone = document.getElementById('fPhone').value.trim();
+  var email = document.getElementById('fEmail').value.trim();
+  var gender = document.getElementById('fGender').value;
+  var region = document.getElementById('fRegion').value;
+  if(!name || !phone || !email || !gender || !region){ alert(t('errPersonal')); return; }
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert(t('errEmail')); return; }
   document.getElementById('stepPersonal').classList.add('hidden');
   document.getElementById('stepQuestions').classList.remove('hidden');
@@ -233,33 +223,49 @@ function backToPersonal(){
   document.getElementById('stepPersonal').classList.remove('hidden');
 }
 
-// UPDATED: Payload now includes q10, q11, and q12
 async function submitSurvey(){
   capture();
-  var payload={
-    name:document.getElementById('fName').value.trim(),
-    phone:document.getElementById('fPhone').value.trim(),
-    email:document.getElementById('fEmail').value.trim(),
-    gender:document.getElementById('fGender').value,
-    region:document.getElementById('fRegion').value,
-    district:document.getElementById('fDistrict').value.trim(),
-    q1:window.__ans.q1!=null?window.__ans.q1:null,
-    q2:window.__ans.q2!=null?window.__ans.q2:null,
-    q3:window.__ans.q3!=null?window.__ans.q3:null,
-    q4:window.__ans.q4!=null?window.__ans.q4:null,
-    q5:window.__ans.q5!=null?window.__ans.q5:null,
-    q6:window.__ans.q6!=null?window.__ans.q6:null,
-    q7:window.__ans.q7!=null?window.__ans.q7:null,
-    q8:window.__ans.q8!=null?window.__ans.q8:null,
-    q9:window.__ans.q9!=null?window.__ans.q9:null,
-    q10:window.__ans.q10!=null?window.__ans.q10:null,
-    q11:window.__ans.q11!=null?window.__ans.q11:null,
-    q12:window.__ans.q12!=null?window.__ans.q12:null,
-    comment:window.__ans.q12||null, // Kept for backward compatibility
-    lang:lang
+  
+  function getAnswerText(qNum) {
+    if (window.__ans[qNum] != null && T[lang]['q'+qNum+'o']) {
+      return T[lang]['q'+qNum+'o'][window.__ans[qNum]];
+    }
+    return "No answer";
+  }
+
+  var extraFeedback = "";
+  if (window.__ans.q10 != null) extraFeedback += "Q10 (Trade Events): " + getAnswerText(10) + "\n";
+  if (window.__ans.q11 != null) extraFeedback += "Q11 (Capacity Building): " + getAnswerText(11) + "\n";
+  if (window.__ans.q12) extraFeedback += "Q12 (Suggestions): " + window.__ans.q12 + "\n";
+
+  var payload = {
+    name: document.getElementById('fName').value.trim(),
+    phone: document.getElementById('fPhone').value.trim(),
+    email: document.getElementById('fEmail').value.trim(),
+    gender: document.getElementById('fGender').value,
+    region: document.getElementById('fRegion').value,
+    district: document.getElementById('fDistrict').value.trim(),
+    q1: window.__ans.q1 != null ? window.__ans.q1 : null,
+    q2: window.__ans.q2 != null ? window.__ans.q2 : null,
+    q3: window.__ans.q3 != null ? window.__ans.q3 : null,
+    q4: window.__ans.q4 != null ? window.__ans.q4 : null,
+    q5: window.__ans.q5 != null ? window.__ans.q5 : null,
+    q6: window.__ans.q6 != null ? window.__ans.q6 : null,
+    q7: window.__ans.q7 != null ? window.__ans.q7 : null,
+    q8: window.__ans.q8 != null ? window.__ans.q8 : null,
+    q9: window.__ans.q9 != null ? window.__ans.q9 : null,
+    comment: extraFeedback.trim() || null, 
+    lang: lang
   };
-  var r=await sb.from('survey_responses').insert([payload]);
-  if(r.error){ alert(r.error.message); return; }
+
+  var r = await sb.from('survey_responses').insert([payload]);
+  
+  if(r.error){ 
+    console.error("Supabase Error:", r.error);
+    alert("Error saving: " + r.error.message); 
+    return; 
+  }
+  
   document.getElementById('stepQuestions').classList.add('hidden');
   document.getElementById('stepDone').classList.remove('hidden');
   window.scrollTo(0,0);
