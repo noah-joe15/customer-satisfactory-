@@ -3,7 +3,10 @@ const sb = supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtYWF1ZG1kZ21na2x2cWNtdmFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMzk2MjMsImV4cCI6MjEwMjcxNTYyM30.yGKizF1gywUIctA_VKDVuI9YO8rH7i-kfQ2RfDb2u_E'
 );
 const ADM_PASS = 'tantrade@123';
+
+// KEPT AT 9 because Q10, Q11, Q12 are packed into the 'comment' column in the paused DB
 const QS = ['q1','q2','q3','q4','q5','q6','q7','q8','q9'];
+
 let allRows = [];
 let rows = [];
 let charts = {};
@@ -259,6 +262,7 @@ function renderBarCard(field,bodyId,chipId,icon){
 function pct(n,d){ return d?Math.round(n/d*100):0; }
 function qStats(q){
   var ans = rows.map(function(r){return r[q];}).filter(function(v){return v!==null&&v!==undefined;});
+  // Index 0 and 1 are always the top 2 positive answers in the new questionnaire
   var pos = ans.filter(function(v){return v===0||v===1;}).length;
   return { answered:ans.length, rate:pct(ans.length,rows.length), sat:pct(pos,ans.length) };
 }
@@ -349,9 +353,10 @@ function renderCharts(){
 // ===== COMMENTS + TABLE + CSV =====
 function renderComments(){
   var el=document.getElementById('commentsList');
+  // This will now beautifully display the formatted Q10, Q11, Q12 text from the comment column
   var cmts=rows.filter(function(r){return (r.comment||'').trim();}).slice(0,30);
   el.innerHTML = cmts.length ? cmts.map(function(r){
-    return '<div class="cmt">'+esc(r.comment)+'<small>'+esc(r.name)+' — '+esc(r.region)+', '+esc(r.district||'')+' ('+new Date(r.created_at).toLocaleDateString()+')</small></div>';
+    return '<div class="cmt" style="white-space: pre-wrap;">'+esc(r.comment)+'<small>'+esc(r.name)+' — '+esc(r.region)+', '+esc(r.district||'')+' ('+new Date(r.created_at).toLocaleDateString()+')</small></div>';
   }).join('') : '<p style="color:#9fb8d9;font-size:13px">No comments yet.</p>';
 }
 
@@ -368,7 +373,7 @@ function renderTable(){
 function esc(s){ return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
 
 function exportCSV(){
-  var head=['Date','Name','Phone','Email','Gender','Region','District','Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8','Q9','Comment'];
+  var head=['Date','Name','Phone','Email','Gender','Region','District','Q1','Q2','Q3','Q4','Q5','Q6','Q7','Q8','Q9','Comment (Q10-Q12)'];
   var lines=[head.join(',')];
   rows.forEach(function(r){
     var vals=[r.created_at,r.name,r.phone,r.email||'',r.gender,r.region,r.district||''];
@@ -385,43 +390,36 @@ function exportCSV(){
 
 // ===== NUCLEAR RESET FUNCTION =====
 async function resetAllData() {
-  // 1st Confirmation: Standard browser alert
   if (!confirm('WARNING: This will permanently DELETE ALL survey responses from the database.\n\nThis action CANNOT be undone.\n\nClick OK to proceed to the final confirmation.')) {
     return;
   }
   
-  // 2nd Confirmation: Requires typing a specific word
   const confirmation = prompt('For safety, type DELETE in all caps to confirm data deletion:');
   if (confirmation !== 'DELETE') {
     alert('Deletion cancelled. No data was harmed.');
     return;
   }
 
-  // Show loading state on the button
   const btn = event.target;
   const originalText = btn.textContent;
   btn.textContent = 'Deleting...';
   btn.disabled = true;
 
   try {
-    // Delete all rows where 'created_at' is not null (effectively deletes everything)
     const { data, error } = await sb
       .from('survey_responses')
       .delete()
       .not('created_at', 'is', null);
     
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     alert('Success! All dummy/survey data has been permanently deleted.');
-    loadAll(); // Refresh the dashboard to show the empty state
+    loadAll();
     
   } catch (err) {
     console.error('Delete error:', err);
     alert('Failed to delete data: ' + (err.message || 'Unknown error. Check console for details.'));
   } finally {
-    // Restore button state
     btn.textContent = originalText;
     btn.disabled = false;
   }
@@ -434,7 +432,19 @@ function analyzeSurveyData(){
 
   var insights = [];
   var recommendations = [];
-  var qNames = ['Overall satisfaction','Professionalism & courtesy','Timeliness of assistance','Clarity of information','Responsiveness to inquiries','Concerns addressed','Service quality','Met expectations','Would recommend'];
+  
+  // UPDATED: Labels match the new 12-question structure for Q1-Q9
+  var qNames = [
+    'Overall quality of services', 
+    'Professionalism, responsiveness and courtesy', 
+    'Time taken to provide service', 
+    'Availability of trade and market information', 
+    'Usefulness of trade/market information', 
+    'Clarity of trade/market information', 
+    'Connecting with market opportunities', 
+    'Support in facilitating business activities', 
+    'Ease of access to services'
+  ];
 
   var sats = QS.map(function(q){ return qStats(q); });
   var avgSat = sats.reduce(function(a,b){ return a + b.sat; }, 0) / sats.length;
@@ -519,10 +529,11 @@ function analyzeSurveyData(){
     }
   }
 
+  // UPDATED: Q9 is now "Ease of access", not "Would recommend"
   var q9Sat = qStats('q9').sat;
   if(q9Sat < 70){
-    insights.push({type:'critical', text:'Only '+q9Sat.toFixed(1)+'% of respondents would recommend TanTrade services to others. This indicates a risk to reputation and growth.'});
-    recommendations.push('Launch a customer experience improvement programme focused on the top pain points identified in this report, tracked with quarterly surveys.');
+    insights.push({type:'critical', text:'Only '+q9Sat.toFixed(1)+'% of respondents found it easy to access TanTrade services. This indicates a risk to user experience and growth.'});
+    recommendations.push('Launch a customer experience improvement programme focused on streamlining access to services and reducing friction points.');
   }
 
   recommendations.push('Establish a quarterly customer satisfaction survey to track progress and identify emerging issues early.');
@@ -677,9 +688,21 @@ async function generateReportPDF(){
   doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(0, 60, 113);
-  doc.text('Question-by-Question Analysis', margin, 20);
+  doc.text('Question-by-Question Analysis (Q1-Q9)', margin, 20);
 
-  var qLabels = ['Q1: Overall satisfaction','Q2: Professionalism','Q3: Timeliness','Q4: Clarity','Q5: Responsiveness','Q6: Concerns addressed','Q7: Service quality','Q8: Met expectations','Q9: Would recommend'];
+  // UPDATED: Labels match the new 12-question structure for Q1-Q9
+  var qLabels = [
+    'Q1: Overall quality of services',
+    'Q2: Professionalism & courtesy',
+    'Q3: Timeliness of service',
+    'Q4: Availability of market info',
+    'Q5: Usefulness of market info',
+    'Q6: Clarity of market info',
+    'Q7: Market opportunities connection',
+    'Q8: Business facilitation support',
+    'Q9: Ease of access to services'
+  ];
+  
   var qData = QS.map(function(q, i){
     var stats = qStats(q);
     return [qLabels[i], stats.rate + '%', stats.sat + '%'];
@@ -722,7 +745,6 @@ async function generateReportPDF(){
   doc.setTextColor(0, 60, 113);
   doc.text('Raw Response Data (First 50)', margin, 20);
 
-  // UPDATED: Added District column to PDF table
   var rawBody = rows.slice(0, 50).map(function(r){
     var q1Text = (r.q1 !== null && r.q1 !== undefined) ? ['Very satisfied','Satisfied','Neutral','Dissatisfied','Very dissatisfied'][r.q1] : '-';
     return [
